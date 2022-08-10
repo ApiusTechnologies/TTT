@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     # External
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
     'corsheaders',
 ]
@@ -51,7 +52,14 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1000/day',
-    }
+    },
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    
 }
 
 MIDDLEWARE = [
