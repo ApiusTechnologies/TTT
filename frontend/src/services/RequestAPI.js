@@ -1,9 +1,23 @@
 import axios from "axios";
 
 export class RequestAPI {
-  get(model, queryParams) {
-    const HOST = "http://10.158.132.23:8000/api";
-    var endpoint = `${HOST}/${model}/?`;
+  calculateEndpoint(path) {
+    const HOST = "http://10.158.132.23:8000/";
+    return `${HOST}/${path}`;
+  }
+
+
+  validateResponse(response){
+    if (response.status >= 400) {
+      console.error("Error connecting to backend service", response.status, response.statusText)
+      return undefined;
+    }
+    return response.data;
+  }
+
+
+  get(path, queryParams) {
+    var endpoint = this.calculateEndpoint(path)
     if(queryParams) {
       for (const [key, value] of Object.entries(queryParams)) {
         if (value !== "") {
@@ -16,11 +30,20 @@ export class RequestAPI {
       axios
         .get(endpoint)
         .then((response) => {
-          if (response.status >= 400) {
-            console.error("Error connecting to backend service", response.status, response.statusText)
-            resolve(undefined);
-          }
-          resolve(response.data);
+          resolve(this.validateResponse(response))
+        });
+    });
+  }
+
+
+  post(path, queryParams) {
+    var endpoint = this.calculateEndpoint(path)
+
+    return new Promise((resolve, reject) => {
+      axios
+        .post(endpoint, queryParams)
+        .then((response) => {
+          resolve(this.validateResponse(response))
         });
     });
   }

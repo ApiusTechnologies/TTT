@@ -6,12 +6,17 @@ export class BackendService {
     }
 
 
-    async getNews(filter) {
-        this.requestAPI.get("news", filter)
+    async getNews(params) {
+        this.requestAPI.get("api/news/?", params)
     }
 
 
-    async getTags(filter) {
-        this.requestAPI.get("tag", filter)
+    async getTags(params) {
+        this.requestAPI.get("api/tag/?", params)
+    }
+
+
+    async getToken(username, password) {
+        this.requestAPI.post("token-auth/", {username: username, password: password})
     }
 } export default BackendService;

@@ -5,6 +5,7 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import LoginDialog from "../components/LoginDialog"
 
 const drawerWidth = 200;
 
@@ -53,6 +54,7 @@ function SideBar(props) {
       }}
       anchor="left"
     >
+      <LoginDialog/>
       <div className={classes.toolbar} />
       <Divider />
       <List>
