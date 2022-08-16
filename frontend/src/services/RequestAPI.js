@@ -2,7 +2,7 @@ import axios from "axios";
 
 export class RequestAPI {
   calculateEndpoint(path) {
-    const HOST = "http://10.158.132.23:8000/";
+    const HOST = "http://192.168.68.105:8000";
     return `${HOST}/${path}`;
   }
 
