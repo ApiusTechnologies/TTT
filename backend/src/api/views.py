@@ -2,9 +2,6 @@ from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework import viewsets
 from itertools import chain
-from django.contrib.auth.models import User
-from .serializers import RegisterSerializer
-# from rest_framework import generics
 from .models import News, Tag
 from .serializers import NewsSerializer, TagSerializer
 from .filters import NewsFilter, TagFilter
@@ -24,9 +21,3 @@ class NewsViewSet(viewsets.ModelViewSet):
     serializer_class = NewsSerializer
     filterset_class = NewsFilter
 
-@authentication_classes([])
-@permission_classes([])
-class RegisterView(CreateAPIView):
-    queryset = User.objects.all()
-    # permission_classes = (AllowAny,)
-    serializer_class = RegisterSerializer
