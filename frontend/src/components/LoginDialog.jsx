@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import ApiService from "../services/ApiService"
+import AuthService from "../services/AuthService"
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -14,7 +14,7 @@ export default function LoginDialog() {
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const apiService = new ApiService()
+  const authService = new AuthService()
   const cookies = new Cookies();
   
   const handleClickOpen = () => {
@@ -22,7 +22,7 @@ export default function LoginDialog() {
   };
 
   const handleClose = () => {
-    apiService.getToken(user, password).then((data) => 
+    authService.getToken(user, password).then((data) => 
       cookies.set('token', data.token, {httpOnly: false})
     );
     setOpen(false);
