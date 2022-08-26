@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import BackendService from "../services/BackendService"
+import ApiService from "../services/ApiService"
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,8 +13,8 @@ import Cookies from 'universal-cookie';
 export default function LoginDialog() {
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = React.useState('');
-  const [pwd, setPwd] = React.useState('');
-  const backendService = new BackendService()
+  const [password, setPassword] = React.useState('');
+  const apiService = new ApiService()
   const cookies = new Cookies();
   
   const handleClickOpen = () => {
@@ -22,12 +22,10 @@ export default function LoginDialog() {
   };
 
   const handleClose = () => {
-    backendService.getToken(user, pwd).then((data) => 
+    apiService.getToken(user, password).then((data) => 
       cookies.set('token', data.token, {httpOnly: false})
     );
     setOpen(false);
-    console.log(cookies.get('token'));
-
   };
 
   return (
@@ -59,7 +57,7 @@ export default function LoginDialog() {
             type="password"
             fullWidth
             variant="standard"
-            onChange={(e) => setPwd(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </DialogContent>
         <DialogActions>

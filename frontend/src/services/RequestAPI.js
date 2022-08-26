@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export class RequestAPI {
-  calculateEndpoint(path) {
-    const HOST = "http://192.168.68.105:8000";
+  getEndpoint(path) {
+    const HOST = "http://192.168.96.209:8000";
     return `${HOST}/${path}`;
   }
 
@@ -15,16 +15,18 @@ export class RequestAPI {
     return response.data;
   }
 
-
-  get(path, queryParams) {
-    var endpoint = this.calculateEndpoint(path)
+  createEndpointParams(path, queryParams) {
+    var endpoint = this.getEndpoint(path)
     if(queryParams) {
-      for (const [key, value] of Object.entries(queryParams)) {
-        if (value !== "") {
-          endpoint += `${key}=${value}&`;
-        }
+      const paramArray = Object.entries(queryParams).filter(([_, value]) => !!value).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      if (paramArray.length > 0) {
+        endpoint += `?${paramArray.join("&")}`
       }
     }
+    return endpoint
+  }
+  get(path, queryParams) {
+    var endpoint = this.createEndpointParams(path, queryParams)
     
     return new Promise((resolve, reject) => {
       axios
@@ -37,7 +39,7 @@ export class RequestAPI {
 
 
   post(path, queryParams) {
-    var endpoint = this.calculateEndpoint(path)
+    var endpoint = this.getEndpoint(path)
 
     return new Promise((resolve, reject) => {
       axios
