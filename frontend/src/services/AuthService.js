@@ -7,6 +7,6 @@ export class AuthService {
 
 
     async getToken(username, password) {
-        return this.requestAPI.post("token-auth/", {username: username, password: password})
+        return this.requestAPI.post("/auth/token-auth/", {username: username, password: password})
     }
 } export default AuthService;
