@@ -35,6 +35,7 @@ INSTALLED_APPS = [
 
     # Internal
     'api',
+    'authentication',
     'parsers',
 
     # External
