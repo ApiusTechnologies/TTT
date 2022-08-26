@@ -3,7 +3,7 @@ import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
 import Tiles from "./Tiles";
 import SideBar from "./SideBar";
-import BackendService from "../services/BackendService"
+import ApiService from "../services/ApiService"
 
 const useStyles = () => ({
   searchTags: {
@@ -48,14 +48,14 @@ class MainView extends React.Component {
     };
     this.handleTagSubmit = this.handleTagSubmit.bind(this);
     this.handleNewsSubmit = this.handleNewsSubmit.bind(this);
-    this.backendService = new BackendService()
+    this.apiService = new ApiService()
   }
 
   componentDidMount() {
-    this.backendService.getNews().then((data) =>
+    this.apiService.getNews().then((data) =>
       this.setState({ news: data || [] })
     );
-    this.backendService.getTags().then((data) =>
+    this.apiService.getTags().then((data) =>
       this.setState({ tags: data || [] })
     );
   }
@@ -66,14 +66,14 @@ class MainView extends React.Component {
 
   handleNewsSubmit(event) {
     const input = this.validateInput(event.target.value)
-    this.backendService.getNews({ title: input }).then((data) =>
+    this.apiService.getNews({ title: input }).then((data) =>
       this.setState({ news: data || [] })
     );
   }
 
   handleTagSubmit(event) {
     const input = this.validateInput(event.target.value)
-    this.backendService.getTags({ name: input }).then((data) =>
+    this.apiService.getTags({ name: input }).then((data) =>
       this.setState({ tags: data || [] })
     );
   }
