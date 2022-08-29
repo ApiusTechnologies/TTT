@@ -38,15 +38,10 @@ const useStyles = makeStyles({
 
 export default function Tile(props) {
   const classes = useStyles();
-  const [animation, setAnimation] = React.useState(false);
-
-  const handleChange = () => {
-    setAnimation(true);
-  };
 
   return (
-    <div onMouseEnter={handleChange} onMouseLeave={handleChange}>
-      <Grow in={animation}  timeout={1000} >
+    <div >
+      <Grow in={true}  timeout={1500} >
         <Card className={classes.root} variant="outlined">
           
           <CardContent>
