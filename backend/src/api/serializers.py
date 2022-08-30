@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tag, News
+from .models import Tag, News, TwitterAccount
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,3 +12,8 @@ class NewsSerializer(serializers.ModelSerializer):
         model = News
         fields = ('id', 'title', 'summary', 'source', 'href', 'tags', 'date')
 
+
+class TwitterAccountsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TwitterAccount
+        fields = ('id', 'name', 'user_id')

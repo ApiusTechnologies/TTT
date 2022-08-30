@@ -70,7 +70,7 @@ export default function LoginDialog() {
   return (
     <div>
       
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={handleClickOpen} style={{backgroundColor: "#2b2b69", color: "white"}}>
         Login
       </Button>
       <Dialog open={open} onClose={handleClose}>

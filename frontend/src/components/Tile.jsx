@@ -29,16 +29,17 @@ const useStyles = makeStyles({
   source: {
     marginBottom: "12px",
     border: "1px solid grey",
-    fontFamily: "Codystar",
+    fontFamily: "Bebas Neue",
     fontSize: 30,
-    backgroundColor: "black",
+    backgroundColor: (props) => props.news?.source?.includes('@') ? "#1DA1F2" : "black",
     color: "white",
   },
 });
 
-export default function Tile(props) {
-  const classes = useStyles();
 
+export default function Tile(props) {
+  const classes = useStyles(props);
+ 
   return (
     <div >
       <Grow in={true}  timeout={1500} >

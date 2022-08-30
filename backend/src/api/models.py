@@ -23,3 +23,10 @@ class News(models.Model):
     class Meta:
         ordering = ['-date']
         verbose_name_plural = "News"
+
+class TwitterAccount(models.Model):
+    name = models.CharField(name='name', max_length=256)
+    user_id = models.CharField(name='user_id', max_length=256)
+
+    def __str__(self):
+        return f'{self.name}: {self.user_id}'

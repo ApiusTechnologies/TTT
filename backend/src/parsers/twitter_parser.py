@@ -35,7 +35,7 @@ class TwitterParser:
             summary = tweet.text
             href = f'https://twitter.com/twitter/status/{tweet.id}'
             news, news_created = News.objects.get_or_create(
-                title=title, summary=summary, source=f'Twitter{self.user_name}', href=href, date=tweet.created_at)
+                title=title, summary=summary, source=f'{self.user_name}', href=href, date=tweet.created_at)
             if(news_created):
                 tagOrange, _ = Tag.objects.get_or_create(name=self.user_name)
                 tagTwitter, _ = Tag.objects.get_or_create(name='Twitter')

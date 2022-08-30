@@ -12,12 +12,6 @@ ALLOWED_HOSTS = os.environ.get(
 TWITTER_BEARER_TOKEN = os.environ.get("TWITTER_BEARER_TOKEN")
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# Twitter Sources 
-TWITTER_SOURCE_LIST=[
-    {"id":951757923075674112,"name":"@CERT_OPL"},
-    {"id":1158139840866791424,"name":"@vxunderground"}
-]
-
 #
 # Application definition
 #
