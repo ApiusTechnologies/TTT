@@ -29,24 +29,20 @@ const useStyles = makeStyles({
   source: {
     marginBottom: "12px",
     border: "1px solid grey",
-    fontFamily: "Codystar",
+    fontFamily: "Bebas Neue",
     fontSize: 30,
-    backgroundColor: "black",
+    backgroundColor: (props) => props.news?.source?.includes('@') ? "#1DA1F2" : "black",
     color: "white",
   },
 });
 
+
 export default function Tile(props) {
-  const classes = useStyles();
-  const [animation, setAnimation] = React.useState(false);
-
-  const handleChange = () => {
-    setAnimation(true);
-  };
-
+  const classes = useStyles(props);
+ 
   return (
-    <div onMouseEnter={handleChange} onMouseLeave={handleChange}>
-      <Grow in={animation}  timeout={1000} >
+    <div >
+      <Grow in={true}  timeout={1500} >
         <Card className={classes.root} variant="outlined">
           
           <CardContent>

@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Tiles from "./Tiles";
 import SideBar from "./SideBar";
 import ApiService from "../services/ApiService"
+import logo from "../graphics/logo.png";
 
 const useStyles = () => ({
   searchTags: {
@@ -34,6 +35,25 @@ const useStyles = () => ({
     backgroundColor: "white",
     width: `calc(100vw - 201px)`,
     paddingLeft: "201px",
+  },
+  logo: {
+    height: "3vh",
+    display: "inline-block",
+    
+  },
+  logoContainer: {
+    textAlign: "center",
+    height: "100%",
+  },
+  logoText: {
+    display: "inline-block",
+    paddingLeft: "10px",
+    fontFamily: "Bebas Neue",
+  },
+  banner: {
+    width: "100%",
+    height: "4vh",
+    backgroundColor: "#2b2b69",
   }
 });
 
@@ -81,30 +101,38 @@ class MainView extends React.Component {
   render() {
     const { classes } = this.props;
 
-    return (
-      <div className={classes.mainViewWrapper}>
-        <div className={classes.formsContainer}>
-          <form className={classes.searchTags} noValidate autoComplete="off">
-            <TextField
-              onChange={this.handleTagSubmit}
-              id="outlined-basic"
-              label="Search Tags"
-              variant="outlined"
-            />
-          </form>
-          <form className={classes.searchNews} noValidate autoComplete="off">
-            <TextField
-              onChange={this.handleNewsSubmit}
-              id="outlined-basic"
-              label="Search News"
-              variant="outlined"
-            />
-          </form>
+    return ( 
+      <div>
+        <div className={classes.banner}>
+          <div className={classes.logoContainer}>
+            <img className={classes.logo} src={logo} alt="Logo"/>
+            <div className={classes.logoText}>Threat Trends Tracker</div>
+          </div>
         </div>
+        <div className={classes.mainViewWrapper}>
+          <div className={classes.formsContainer}>
+            <form className={classes.searchTags} noValidate autoComplete="off">
+              <TextField
+                onChange={this.handleTagSubmit}
+                id="outlined-basic"
+                label="Search Tags"
+                variant="outlined"
+              />
+            </form>
+            <form className={classes.searchNews} noValidate autoComplete="off">
+              <TextField
+                onChange={this.handleNewsSubmit}
+                id="outlined-basic"
+                label="Search News"
+                variant="outlined"
+              />
+            </form>
+          </div>
 
-        <div>
-          <SideBar tags={this.state.tags} />
-          <Tiles news={this.state.news} />
+          <div>
+            <SideBar tags={this.state.tags} />
+            <Tiles news={this.state.news} />
+          </div>
         </div>
       </div>
     );
