@@ -2,7 +2,7 @@ import axios from "axios";
 
 export class RequestAPI {
   getEndpoint(path) {
-    const HOST = "http://192.168.81.210:8000";
+    const HOST = "http://192.168.14.209:8000";
     return `${HOST}/${path}`;
   }
 
@@ -43,7 +43,6 @@ export class RequestAPI {
 
   post(path, queryParams) {
     var endpoint = this.getEndpoint(path)
-    console.log(queryParams)
     return new Promise((resolve, reject) => {
       axios
         .post(endpoint, queryParams)

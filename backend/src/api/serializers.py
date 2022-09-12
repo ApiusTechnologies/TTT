@@ -13,7 +13,3 @@ class NewsSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'summary', 'source', 'href', 'tags', 'date')
 
 
-class TwitterAccountsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TwitterAccount
-        fields = ('id', 'name', 'user_id')

@@ -16,8 +16,8 @@ import AlertTitle from '@mui/material/AlertTitle';
 export default function LoginDialog() {
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = React.useState('');
-  const [registerVisible, setRegisterVisible] = React.useState('none');
-  const [errorAlertVisible, setErrorAlertVisible] = React.useState('none');
+  const [registerVisible, setRegisterVisible] = React.useState(false);
+  const [errorAlertVisible, setErrorAlertVisible] = React.useState(false);
   const [password, setPassword] = React.useState('');
   const [password2, setPassword2] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -31,8 +31,8 @@ export default function LoginDialog() {
 
   const handleClose = () => {
     setOpen(false);
-    setRegisterVisible('none');
-    setErrorAlertVisible('none');
+    setRegisterVisible(false);
+    setErrorAlertVisible(false);
   };
 
   const handleCloseLogin = () => {
@@ -40,30 +40,29 @@ export default function LoginDialog() {
       cookies.set('token', data.token, {httpOnly: false})
     );
     setOpen(false);
-    setRegisterVisible('none');
-    setErrorAlertVisible('none');
+    setRegisterVisible(false);
+    setErrorAlertVisible(false);
   };
 
   const handleCloseRegister = () => {
     if(email.includes('@')){
         authService.register(user, password, password2, email).then((data) => 
-          console.log(data)
-          // cookies.set('token', data.token, {httpOnly: false})
+          cookies.set('token', data.token, {httpOnly: false})
         );
         setOpen(false);
-        setRegisterVisible('none');
-        setErrorAlertVisible('none');
+        setRegisterVisible(false);
+        setErrorAlertVisible(false);
         // TODO: nice alert
         alert("Account has been created!.")
     }
     else {
-      setErrorAlertVisible('block')
+      setErrorAlertVisible(true)
     }
     
   };
 
   const expandRegisterForm = () => {
-    setRegisterVisible('block')
+    setRegisterVisible(true)
   }
   
 
@@ -75,7 +74,7 @@ export default function LoginDialog() {
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Login</DialogTitle>
-        <Alert severity="error" style={{display: errorAlertVisible}}>
+        <Alert severity="error" style={{display: errorAlertVisible ? "block" : "none"}}>
           <AlertTitle>Error</AlertTitle>
           This is not a valid Email address.
         </Alert>
@@ -104,7 +103,7 @@ export default function LoginDialog() {
             variant="standard"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <TextField style={{display: registerVisible}}
+          <TextField style={{display: registerVisible ? "block" : "none"}}
             autoFocus
             margin="dense"
             id="name"
@@ -114,7 +113,7 @@ export default function LoginDialog() {
             variant="standard"
             onChange={(e) => setPassword2(e.target.value)}
           />
-          <TextField style={{display: registerVisible}}
+          <TextField style={{display: registerVisible ? "block" : "none"}}
             autoFocus
             margin="dense"
             id="name"
@@ -126,7 +125,7 @@ export default function LoginDialog() {
           />
         </DialogContent>
         <DialogActions>
-          <Button style={{display: registerVisible}} onClick={handleCloseRegister}>Submit</Button>
+          <Button style={{display: registerVisible ? "block" : "none"}} onClick={handleCloseRegister}>Submit</Button>
           <Button onClick={expandRegisterForm}>Register</Button>
           <Button onClick={handleCloseLogin}>Login</Button>
         </DialogActions>

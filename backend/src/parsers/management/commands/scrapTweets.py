@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 from parsers.twitter_parser import TwitterParser
-from django.conf import settings
 from api.models import TwitterAccount
 
 

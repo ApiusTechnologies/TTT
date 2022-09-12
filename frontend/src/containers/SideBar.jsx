@@ -53,7 +53,7 @@ function SideBar(props) {
       }}
       anchor="left"
     >
-      <LoginDialog S/>
+      <LoginDialog/>
       <div className={classes.toolbar} />
       <Divider />
       <List>
