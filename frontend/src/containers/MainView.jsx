@@ -5,6 +5,7 @@ import Tiles from "./Tiles";
 import SideBar from "./SideBar";
 import ApiService from "../services/ApiService"
 import logo from "../graphics/logo.png";
+import ArrowDownwardSharpIcon from "@mui/icons-material/ArrowDownwardSharp";
 
 const useStyles = () => ({
   searchTags: {
@@ -16,7 +17,7 @@ const useStyles = () => ({
     marginRight: "15px",
     paddingTop: "1vh",
     paddingBottom: "1vh",
-    minWidth: "32%",
+    minWidth: "30%",
   },
   searchNews: {
     "& > *": {
@@ -26,7 +27,7 @@ const useStyles = () => ({
 
     paddingTop: "1vh",
     paddingBottom: "1vh",
-    minWidth: "64%",
+    minWidth: "62%",
   },
   formsContainer: {
     display: "flex",
@@ -54,6 +55,12 @@ const useStyles = () => ({
     width: "100%",
     height: "4vh",
     backgroundColor: "#2b2b69",
+  },
+  arrow: {
+    transform: `scale(3.2)`,
+    color: "lightgrey",
+    paddingTop: "1vh",
+    paddingLeft: "18px",
   }
 });
 
@@ -65,15 +72,18 @@ class MainView extends React.Component {
       tags: [],
       tagsSearch: "",
       newsSearch: "",
+      next: "",
     };
     this.handleTagSubmit = this.handleTagSubmit.bind(this);
     this.handleNewsSubmit = this.handleNewsSubmit.bind(this);
+    this.getMoreNews = this.getMoreNews.bind(this);
+
     this.apiService = new ApiService()
   }
 
   componentDidMount() {
-    this.apiService.getNews().then((data) =>
-      this.setState({ news: data || [] })
+    this.apiService.getNews({limit:16}).then((data) =>
+      this.setState({ news: data.results || [] , next: data.next})
     );
     this.apiService.getTags().then((data) =>
       this.setState({ tags: data || [] })
@@ -86,7 +96,7 @@ class MainView extends React.Component {
 
   handleNewsSubmit(event) {
     const input = this.validateInput(event.target.value)
-    this.apiService.getNews({ title: input }).then((data) =>
+    this.apiService.getNews('',{ title: input }).then((data) =>
       this.setState({ news: data || [] })
     );
   }
@@ -96,6 +106,16 @@ class MainView extends React.Component {
     this.apiService.getTags({ name: input }).then((data) =>
       this.setState({ tags: data || [] })
     );
+  }
+
+  getMoreNews(event) {
+    this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1]}).then((data) =>
+      this.setState(prevState => ({
+        news: [...prevState.news, ...data.results], next: data.next
+      }))
+    );
+    console.log(this.state.news)
+    
   }
 
   render() {
@@ -127,8 +147,9 @@ class MainView extends React.Component {
                 variant="outlined"
               />
             </form>
+            
+            <ArrowDownwardSharpIcon onClick={this.getMoreNews} className={classes.arrow}></ArrowDownwardSharpIcon>
           </div>
-
           <div>
             <SideBar tags={this.state.tags} />
             <Tiles news={this.state.news} />

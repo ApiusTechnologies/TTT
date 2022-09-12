@@ -8,6 +8,7 @@ export class RequestAPI {
 
 
   validateResponse(response){
+    //  console.log(response)
     if (response.status >= 400) {
       console.error("Error connecting to backend service", response.status, response.statusText)
       return undefined;
