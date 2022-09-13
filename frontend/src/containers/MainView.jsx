@@ -114,8 +114,10 @@ class MainView extends React.Component {
         news: [...prevState.news, ...data.results], next: data.next
       }))
     );
-    console.log(this.state.news)
-    
+    window.scrollBy({
+      top: window.innerHeight,
+      behavior: 'smooth'
+    })
   }
 
   render() {
