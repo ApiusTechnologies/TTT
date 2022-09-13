@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     fontFamily: "Chakra Petch",
   },
   summary: {
-    fontSize: 12,
+    fontSize: 16,
     textAlign: "left",
     fontFamily: "Chakra Petch",
   },
@@ -63,7 +63,7 @@ export default function Tile(props) {
                 variant="h5"
                 component="h2"
               >
-                {props.news.summary.split("<")[0]}
+                {props.news.summary ? props.news.summary.split("<")[0] : "No summary"}
               </Typography>
             </div>
           </CardContent>
