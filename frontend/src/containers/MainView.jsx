@@ -95,21 +95,28 @@ class MainView extends React.Component {
   }
 
   handleNewsSubmit(event) {
-    const input = this.validateInput(event.target.value)
-    this.apiService.getNews('',{ title: input }).then((data) =>
-      this.setState({ news: data || [] })
-    );
+    if(event.keyCode === 13) {
+      event.preventDefault()
+      const input = this.validateInput(event.target.value)
+      this.apiService.getNews({ limit:16, title: input }).then((data) =>
+        this.setState({ news: data.results || [], next: data.next })
+      );
+      this.setState({newsSearch: input})
+    }
   }
 
   handleTagSubmit(event) {
-    const input = this.validateInput(event.target.value)
-    this.apiService.getTags({ name: input }).then((data) =>
-      this.setState({ tags: data || [] })
-    );
+    if(event.keyCode === 13) {
+      event.preventDefault()
+      const input = this.validateInput(event.target.value)
+      this.apiService.getTags({ name: input }).then((data) =>
+        this.setState({ tags: data || [] })
+      );
+    }
   }
 
   getMoreNews(event) {
-    this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1]}).then((data) =>
+    this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1], title: this.state.newsSearch}).then((data) =>
       this.setState(prevState => ({
         news: [...prevState.news, ...data.results], next: data.next
       }))
@@ -135,7 +142,7 @@ class MainView extends React.Component {
           <div className={classes.formsContainer}>
             <form className={classes.searchTags} noValidate autoComplete="off">
               <TextField
-                onChange={this.handleTagSubmit}
+                onKeyDown={this.handleTagSubmit}
                 id="outlined-basic"
                 label="Search Tags"
                 variant="outlined"
@@ -143,7 +150,7 @@ class MainView extends React.Component {
             </form>
             <form className={classes.searchNews} noValidate autoComplete="off">
               <TextField
-                onChange={this.handleNewsSubmit}
+                onKeyDown={this.handleNewsSubmit}
                 id="outlined-basic"
                 label="Search News"
                 variant="outlined"

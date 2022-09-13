@@ -2,13 +2,12 @@ import axios from "axios";
 
 export class RequestAPI {
   getEndpoint(path) {
-    const HOST = "http://192.168.14.209:8000";
+    const HOST = "http://192.168.208.210:8000";
     return `${HOST}/${path}`;
   }
 
 
   validateResponse(response){
-    //  console.log(response)
     if (response.status >= 400) {
       console.error("Error connecting to backend service", response.status, response.statusText)
       return undefined;
