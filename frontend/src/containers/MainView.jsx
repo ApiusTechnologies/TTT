@@ -29,18 +29,20 @@ const useStyles = () => ({
       width: "100%",
       backgroundColor: "white",
     },
-
+    
     paddingTop: "1vh",
     paddingBottom: "1vh",
     minWidth: "58%",
   },
   formsContainer: {
     display: "flex",
+    backgroundColor: "white",
   },
   mainViewWrapper: {
     backgroundColor: "white",
     width: `calc(100vw - 201px)`,
     paddingLeft: "201px",
+    paddingTop: "10vh",
   },
   logo: {
     height: "3vh",
@@ -60,6 +62,7 @@ const useStyles = () => ({
     width: "100%",
     height: "4vh",
     backgroundColor: "#2b2b69",
+    // position: "fixed",
   },
   arrow: {
     transform: `scale(3.2)`,
@@ -71,6 +74,12 @@ const useStyles = () => ({
     paddingTop: "1vh",
     paddingLeft: "10px",
     minWidth: "15%",
+  },
+  navbar: {
+    position: "fixed",
+    paddingLeft: "205px",
+    width: `calc(100vw - 201px)`,
+
   }
 });
 
@@ -145,19 +154,21 @@ class MainView extends React.Component {
     })
   }
 
+
   render() {
     const { classes } = this.props;
 
     return ( 
       <div>
+        <div className={classes.navbar}>
+
         <div className={classes.banner}>
           <div className={classes.logoContainer}>
             <img className={classes.logo} src={logo} alt="Logo"/>
             <div className={classes.logoText}>Threat Trends Tracker</div>
           </div>
         </div>
-        <div className={classes.mainViewWrapper}>
-          <div className={classes.formsContainer}>
+        <div className={classes.formsContainer}>
             <form className={classes.searchTags} noValidate autoComplete="off">
               <TextField
                 onKeyDown={this.handleTagSubmit}
@@ -193,6 +204,10 @@ class MainView extends React.Component {
             </Box>
             <ArrowDownwardSharpIcon onClick={this.getMoreNews} className={classes.arrow}></ArrowDownwardSharpIcon>
           </div>
+        </div>
+
+        <div className={classes.mainViewWrapper}>
+          
           <div>
             <SideBar tags={this.state.tags} />
             <Tiles news={this.state.news} />
