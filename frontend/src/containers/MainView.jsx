@@ -118,7 +118,6 @@ class MainView extends React.Component {
 
   handleSourceChange(event) {
     this.setState({ source: event.target.value})
-    console.log(event.target.value)
   }
 
   handleNewsSubmit(event) {
