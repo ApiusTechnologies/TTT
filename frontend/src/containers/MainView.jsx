@@ -79,6 +79,7 @@ const useStyles = () => ({
     position: "fixed",
     paddingLeft: "205px",
     width: `calc(100vw - 201px)`,
+    zIndex: "4",
 
   }
 });
@@ -99,6 +100,7 @@ class MainView extends React.Component {
     this.handleNewsSubmit = this.handleNewsSubmit.bind(this);
     this.getMoreNews = this.getMoreNews.bind(this);
     this.handleSourceChange = this.handleSourceChange.bind(this);
+    this.handleTagOnClick = this.handleTagOnClick.bind(this);
 
     this.apiService = new ApiService()
   }
@@ -124,11 +126,19 @@ class MainView extends React.Component {
     if(event.keyCode === 13) {
       event.preventDefault()
       const input = this.validateInput(event.target.value)
-      this.apiService.getNews({ limit:16, summary: input, source: this.state.source }).then((data) =>
+      this.apiService.getNews({ limit:16, summary: input, source: this.state.source, tags: this.state.tagsSearch }).then((data) =>
         this.setState({ news: data.results || [], next: data.next })
       );
       this.setState({newsSearch: input})
     }
+  }
+
+  handleTagOnClick(index, text) {
+    this.apiService.getNews({ limit:16, tags: text, summary: this.state.newsSearch, source: this.state.source }).then((data) =>
+      this.setState({ news: data.results || [], next: data.next })
+    );
+    this.setState({tagsSearch: text})
+
   }
 
   handleTagSubmit(event) {
@@ -142,16 +152,22 @@ class MainView extends React.Component {
   }
 
   getMoreNews(event) {
-    this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1], summary: this.state.newsSearch, source: this.state.source}).then((data) =>
-      this.setState(prevState => ({
-        news: [...prevState.news, ...data.results], next: data.next
-      }))
-    );
-    window.scrollBy({
-      top: window.innerHeight,
-      behavior: 'smooth'
-    })
-  }
+    if(this.state.next) {
+        this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1].split('&')[0], summary: this.state.newsSearch, source: this.state.source, tags: this.state.tagsSearch}).then((data) =>
+          this.setState(prevState => ({
+            news: [...prevState.news, ...data.results], next: data.next
+          }))
+        );
+        window.scrollBy({
+          top: window.innerHeight,
+          behavior: 'smooth'
+        })
+      }
+      else {
+        alert("No more entries with given filters.")
+      }
+    }
+      
 
 
   render() {
@@ -163,8 +179,9 @@ class MainView extends React.Component {
 
         <div className={classes.banner}>
           <div className={classes.logoContainer}>
-            <img className={classes.logo} src={logo} alt="Logo"/>
+            <img className={classes.logo} src={logo} alt="Logo" onClick={() => alert(`Treść: ${this.state.newsSearch}\nTagi: ${this.state.tagsSearch}\nŹródło: ${this.state.source}`)}/>
             <div className={classes.logoText}>Threat Trends Tracker</div>
+            
           </div>
         </div>
         <div className={classes.formsContainer}>
@@ -208,7 +225,7 @@ class MainView extends React.Component {
         <div className={classes.mainViewWrapper}>
           
           <div>
-            <SideBar tags={this.state.tags} />
+            <SideBar onClickFunc={this.handleTagOnClick} tags={this.state.tags} />
             <Tiles news={this.state.news} />
           </div>
         </div>

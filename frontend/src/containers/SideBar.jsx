@@ -56,12 +56,12 @@ function SideBar(props) {
       <LoginDialog/>
       <div className={classes.toolbar} />
       <Divider />
-      <List>
+      <List >
         {props.tags
           .map((o) => o.name)
           .map((text, index) => (
             <>
-              <ListItem button key={text}>
+              <ListItem button key={text} onClick={ () => props.onClickFunc(index, text)} >
                 <ListItemText primary={text} />
               </ListItem>
               <Divider />
