@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime, timedelta
-
+from django.contrib.auth.models import User
 
 class Tag(models.Model):
     name = models.CharField(name='name', default='', max_length=256)
@@ -30,3 +30,24 @@ class TwitterAccount(models.Model):
 
     def __str__(self):
         return f'{self.name}: {self.user_id}'
+
+
+class Keyword(models.Model):
+    value = models.CharField(name='value', null=True, max_length=256)
+
+    def __str__(self):
+        return f'{self.value}'
+
+class SavedSet(models.Model):
+    name = models.CharField(name='name', null=True, max_length=256)
+    keywords = models.ManyToManyField(Keyword)
+
+    def __str__(self):
+        return f'{self.name}'
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    savedsets = models.ManyToManyField(SavedSet, blank=True)
+
+    def __str__(self):
+        return self.user.username

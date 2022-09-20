@@ -6,6 +6,11 @@ import SideBar from "./SideBar";
 import ApiService from "../services/ApiService"
 import logo from "../graphics/logo.png";
 import ArrowDownwardSharpIcon from "@mui/icons-material/ArrowDownwardSharp";
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const useStyles = () => ({
   searchTags: {
@@ -17,25 +22,27 @@ const useStyles = () => ({
     marginRight: "15px",
     paddingTop: "1vh",
     paddingBottom: "1vh",
-    minWidth: "30%",
+    minWidth: "17%",
   },
   searchNews: {
     "& > *": {
       width: "100%",
       backgroundColor: "white",
     },
-
+    
     paddingTop: "1vh",
     paddingBottom: "1vh",
-    minWidth: "62%",
+    minWidth: "58%",
   },
   formsContainer: {
     display: "flex",
+    backgroundColor: "white",
   },
   mainViewWrapper: {
     backgroundColor: "white",
     width: `calc(100vw - 201px)`,
     paddingLeft: "201px",
+    paddingTop: "10vh",
   },
   logo: {
     height: "3vh",
@@ -55,14 +62,27 @@ const useStyles = () => ({
     width: "100%",
     height: "4vh",
     backgroundColor: "#2b2b69",
+    // position: "fixed",
   },
   arrow: {
     transform: `scale(3.2)`,
     color: "lightgrey",
     paddingTop: "1vh",
     paddingLeft: "18px",
+  },
+  selectSource: {
+    paddingTop: "1vh",
+    paddingLeft: "10px",
+    minWidth: "15%",
+  },
+  navbar: {
+    position: "fixed",
+    paddingLeft: "205px",
+    width: `calc(100vw - 201px)`,
+
   }
 });
+
 
 class MainView extends React.Component {
   constructor(props) {
@@ -73,17 +93,19 @@ class MainView extends React.Component {
       tagsSearch: "",
       newsSearch: "",
       next: "",
+      source: "",
     };
     this.handleTagSubmit = this.handleTagSubmit.bind(this);
     this.handleNewsSubmit = this.handleNewsSubmit.bind(this);
     this.getMoreNews = this.getMoreNews.bind(this);
+    this.handleSourceChange = this.handleSourceChange.bind(this);
 
     this.apiService = new ApiService()
   }
 
   componentDidMount() {
     this.apiService.getNews({limit:16}).then((data) =>
-      this.setState({ news: data.results || [] , next: data.next})
+      this.setState({ news: data.results || [] , next: data.next, source: this.state.source})
     );
     this.apiService.getTags().then((data) =>
       this.setState({ tags: data || [] })
@@ -94,11 +116,15 @@ class MainView extends React.Component {
     return data.replace("&", "%26")
   }
 
+  handleSourceChange(event) {
+    this.setState({ source: event.target.value})
+  }
+
   handleNewsSubmit(event) {
     if(event.keyCode === 13) {
       event.preventDefault()
       const input = this.validateInput(event.target.value)
-      this.apiService.getNews({ limit:16, title: input }).then((data) =>
+      this.apiService.getNews({ limit:16, summary: input, source: this.state.source }).then((data) =>
         this.setState({ news: data.results || [], next: data.next })
       );
       this.setState({newsSearch: input})
@@ -116,7 +142,7 @@ class MainView extends React.Component {
   }
 
   getMoreNews(event) {
-    this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1], title: this.state.newsSearch}).then((data) =>
+    this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1], summary: this.state.newsSearch, source: this.state.source}).then((data) =>
       this.setState(prevState => ({
         news: [...prevState.news, ...data.results], next: data.next
       }))
@@ -127,19 +153,21 @@ class MainView extends React.Component {
     })
   }
 
+
   render() {
     const { classes } = this.props;
 
     return ( 
       <div>
+        <div className={classes.navbar}>
+
         <div className={classes.banner}>
           <div className={classes.logoContainer}>
             <img className={classes.logo} src={logo} alt="Logo"/>
             <div className={classes.logoText}>Threat Trends Tracker</div>
           </div>
         </div>
-        <div className={classes.mainViewWrapper}>
-          <div className={classes.formsContainer}>
+        <div className={classes.formsContainer}>
             <form className={classes.searchTags} noValidate autoComplete="off">
               <TextField
                 onKeyDown={this.handleTagSubmit}
@@ -156,9 +184,29 @@ class MainView extends React.Component {
                 variant="outlined"
               />
             </form>
-            
+            <Box className={classes.selectSource}>
+              <FormControl fullWidth>
+                <InputLabel id="source-select-label">Select Source</InputLabel>
+                <Select
+                  labelId="source-select-label"
+                  id="source-select"
+                  value={this.state.source}
+                  label="Select Source"
+                  onChange={this.handleSourceChange}
+                >
+                  <MenuItem value={""}>All</MenuItem>
+                  <MenuItem value={"Sekurak"}>Sekurak</MenuItem>
+                  <MenuItem value={"@"}>Twitter</MenuItem>
+                  <MenuItem value={"Niebezpiecznik"}>Niebezpiecznik</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
             <ArrowDownwardSharpIcon onClick={this.getMoreNews} className={classes.arrow}></ArrowDownwardSharpIcon>
           </div>
+        </div>
+
+        <div className={classes.mainViewWrapper}>
+          
           <div>
             <SideBar tags={this.state.tags} />
             <Tiles news={this.state.news} />
