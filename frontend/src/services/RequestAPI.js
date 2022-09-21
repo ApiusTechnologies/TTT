@@ -53,11 +53,11 @@ export class RequestAPI {
     });
   }
 
-  patch(path, queryParams) {
+  patch(path, queryParams, headers, body) {
     var endpoint = this.getEndpoint(path)
     return new Promise((resolve, reject) => {
       axios
-        .patch(endpoint, queryParams)
+        .patch(endpoint, body, headers )
         .then((response) => {
           resolve(this.validateResponse(response))
 

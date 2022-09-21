@@ -56,6 +56,11 @@ class SavedSetDialog extends React.Component {
     };
 
     handleSubmit = () => {
+        this.apiService.patchAuthenticatedUserProfile({}, {
+          headers: {
+          Authorization: 'Token ' + this.cookies.get('token') 
+          }
+      }, { savedsets: [5,6,7,9] })
         this.setState({ open: false })
     };
 

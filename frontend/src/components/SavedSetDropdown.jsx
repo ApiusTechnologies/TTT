@@ -25,7 +25,7 @@ class SavedSetDropdown extends React.Component{
 
     componentDidMount() {
         localStorage.setItem('SavedSetSelect', "")
-        this.apiService.getUserProfile({}, {
+        this.apiService.getAuthenticatedUserProfile({}, {
             headers: {
               Authorization: 'Token ' + this.cookies.get('token') 
             }

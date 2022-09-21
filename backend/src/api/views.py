@@ -1,11 +1,13 @@
+import json
+from django.forms.models import model_to_dict
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from itertools import chain
 from .models import News, Tag, TwitterAccount, UserProfile, SavedSet
 from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer, SavedSetSerializer
 from .filters import NewsFilter, TagFilter
-from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.decorators import authentication_classes, permission_classes, action
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 
@@ -23,29 +25,35 @@ class NewsViewSet(viewsets.ModelViewSet):
     serializer_class = NewsSerializer
     filterset_class = NewsFilter
 
-
+# @authentication_classes([])
+# @permission_classes([])
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    
-    # def retrieve(self, request, pk=None):
-    #     user = None
-    #     if pk is None and request.user:
-    #         user = get_object_or_404(queryset, user=request.user.id)
-    #     else:
-    #         user = get_object_or_404(queryset, pk=pk)
 
-    #     serializer = UserProfileSerializer(user)
-    #     return Response(serializer.data)
+    @action(methods=['get','patch'], detail=False, url_path='self')
+    def handle_self(self, request):
+        if(request.method == 'GET'):
+            return self.get_self(request)
+        elif(request.method == 'PATCH'):
+            return self.patch_self(request)
 
     def get_self(self, request):
-        user = get_object_or_404(self.queryset, user=request.user.id)
-        serializer = UserProfileSerializer(user)
+        profile = get_object_or_404(self.queryset, user=request.user.id)
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def patch_self(self, request):
+        profile = get_object_or_404(self.queryset, user=request.user.id)
+        body = json.loads(request.body)
+        savedsets_ids = body['savedsets']
+        savedsets = [get_object_or_404(SavedSet, id=savedset_id) for savedset_id in savedsets_ids]
+        profile.savedsets.set(savedsets)
+        serializer = UserProfileSerializer(profile)
         return Response(serializer.data)
 
 
-# @authentication_classes([])
-# @permission_classes([])
+
 class SavedSetViewSet(viewsets.ModelViewSet):
     queryset = SavedSet.objects.all()
     serializer_class = SavedSetSerializer

@@ -7,10 +7,12 @@ router = DefaultRouter()
 router.register(r'news', NewsViewSet, basename='news')
 router.register(r'tag', TagViewSet, basename='tag')
 router.register(r'savedset', SavedSetViewSet, basename='savedset')
+router.register(r'userprofile', UserProfileViewSet, basename='userprofile')
 
-urlpatterns = [
-    path('userprofile/', UserProfileViewSet.as_view({"get" : "get_self"}), name='userprofile'),
-]
+# urlpatterns = [
+#     path('userprofile/patch_self/', UserProfileViewSet.as_view({"patch" : "patch_self"}), name='userprofile-patch-self'),
+#     path('userprofile/get_self/', UserProfileViewSet.as_view({"get" : "get_self"}), name='userprofile-get-self'),
+# ]
 
 
-urlpatterns += router.urls
+urlpatterns = router.urls
