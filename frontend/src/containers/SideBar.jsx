@@ -6,6 +6,9 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import LoginDialog from "../components/LoginDialog";
+import SavedSetDropdown from "../components/SavedSetDropdown";
+import SavedSetsDialog from "../components/SavedSetsDialog";
+
 const drawerWidth = 200;
 
 const useStyles = makeStyles((theme) => ({
@@ -53,7 +56,11 @@ function SideBar(props) {
       }}
       anchor="left"
     >
+      
       <LoginDialog/>
+      <SavedSetsDialog />
+      <SavedSetDropdown />
+
       <div className={classes.toolbar} />
       <Divider />
       <List >

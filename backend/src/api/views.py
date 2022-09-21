@@ -2,10 +2,12 @@ from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework import viewsets
 from itertools import chain
-from .models import News, Tag, TwitterAccount, UserProfile
-from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer
+from .models import News, Tag, TwitterAccount, UserProfile, SavedSet
+from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer, SavedSetSerializer
 from .filters import NewsFilter, TagFilter
 from rest_framework.decorators import authentication_classes, permission_classes
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
 
 @authentication_classes([])
 @permission_classes([])
@@ -21,10 +23,32 @@ class NewsViewSet(viewsets.ModelViewSet):
     serializer_class = NewsSerializer
     filterset_class = NewsFilter
 
-@authentication_classes([])
-@permission_classes([])
+
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    
+    # def retrieve(self, request, pk=None):
+    #     user = None
+    #     if pk is None and request.user:
+    #         user = get_object_or_404(queryset, user=request.user.id)
+    #     else:
+    #         user = get_object_or_404(queryset, pk=pk)
+
+    #     serializer = UserProfileSerializer(user)
+    #     return Response(serializer.data)
+
+    def get_self(self, request):
+        user = get_object_or_404(self.queryset, user=request.user.id)
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data)
+
+
+# @authentication_classes([])
+# @permission_classes([])
+class SavedSetViewSet(viewsets.ModelViewSet):
+    queryset = SavedSet.objects.all()
+    serializer_class = SavedSetSerializer
+
 
 

@@ -2,7 +2,7 @@ import axios from "axios";
 
 export class RequestAPI {
   getEndpoint(path) {
-    const HOST = "http://192.168.137.210:8000";
+    const HOST = "http://192.168.68.107:8000";
     return `${HOST}/${path}`;
   }
 
@@ -27,12 +27,12 @@ export class RequestAPI {
     return endpoint
   }
 
-  get(path, queryParams) {
+  get(path, queryParams, headers) {
     var endpoint = this.createEndpointParams(path, queryParams)
     
     return new Promise((resolve, reject) => {
       axios
-        .get(endpoint)
+        .get(endpoint, headers)
         .then((response) => {
 
           resolve(this.validateResponse(response))
@@ -46,6 +46,18 @@ export class RequestAPI {
     return new Promise((resolve, reject) => {
       axios
         .post(endpoint, queryParams)
+        .then((response) => {
+          resolve(this.validateResponse(response))
+
+        });
+    });
+  }
+
+  patch(path, queryParams) {
+    var endpoint = this.getEndpoint(path)
+    return new Promise((resolve, reject) => {
+      axios
+        .patch(endpoint, queryParams)
         .then((response) => {
           resolve(this.validateResponse(response))
 

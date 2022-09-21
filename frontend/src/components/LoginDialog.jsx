@@ -21,12 +21,21 @@ export default function LoginDialog() {
   const [password, setPassword] = React.useState('');
   const [password2, setPassword2] = React.useState('');
   const [email, setEmail] = React.useState('');
-
+  
   const authService = new AuthService()
   const cookies = new Cookies();
   
+  const [inOrOut, setInOrOut] = React.useState(cookies.get('token') ? 'Logout' : 'Login');
+
   const handleClickOpen = () => {
-    setOpen(true);
+    if(inOrOut === 'Login'){
+      setOpen(true);
+    }
+    if(inOrOut === 'Logout'){
+      cookies.remove('token');
+      setInOrOut('Login');
+    }
+
   };
 
   const handleClose = () => {
@@ -42,6 +51,7 @@ export default function LoginDialog() {
     setOpen(false);
     setRegisterVisible(false);
     setErrorAlertVisible(false);
+    setInOrOut('Logout');
   };
 
   const handleCloseRegister = () => {
@@ -69,8 +79,8 @@ export default function LoginDialog() {
   return (
     <div>
       
-      <Button variant="outlined" onClick={handleClickOpen} style={{backgroundColor: "#2b2b69", color: "white"}}>
-        Login
+      <Button variant="outlined" onClick={handleClickOpen} style={{marginTop: "-15px", fontFamily: "Bebas Neue", fontSize: "26px", width: "100%", borderRadius: "0", backgroundColor: "#2b2b69", color: "white"}}>
+        {inOrOut}
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Login</DialogTitle>

@@ -11,6 +11,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Cookies from 'universal-cookie';
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = () => ({
   searchTags: {
@@ -67,8 +69,12 @@ const useStyles = () => ({
   arrow: {
     transform: `scale(3.2)`,
     color: "lightgrey",
-    paddingTop: "1vh",
-    paddingLeft: "18px",
+  },
+  button: {
+    color: "lightgrey",
+    marginLeft: "28px",
+    borderRadius: "0",
+    width: "70px",
   },
   selectSource: {
     paddingTop: "1vh",
@@ -95,6 +101,7 @@ class MainView extends React.Component {
       newsSearch: "",
       next: "",
       source: "",
+      savedset: "",
     };
     this.handleTagSubmit = this.handleTagSubmit.bind(this);
     this.handleNewsSubmit = this.handleNewsSubmit.bind(this);
@@ -103,6 +110,7 @@ class MainView extends React.Component {
     this.handleTagOnClick = this.handleTagOnClick.bind(this);
 
     this.apiService = new ApiService()
+    this.cookies = new Cookies();
   }
 
   componentDidMount() {
@@ -112,7 +120,9 @@ class MainView extends React.Component {
     this.apiService.getTags().then((data) =>
       this.setState({ tags: data || [] })
     );
+    
   }
+
 
   validateInput(data){
     return data.replace("&", "%26")
@@ -123,9 +133,16 @@ class MainView extends React.Component {
   }
 
   handleNewsSubmit(event) {
+    let savedset = localStorage.getItem('SavedSetSelect')
     if(event.keyCode === 13) {
       event.preventDefault()
-      const input = this.validateInput(event.target.value)
+      let input = this.validateInput(event.target.value)
+      if(input && savedset){
+        input+=','+savedset
+      }
+      else if(savedset) {
+        input=savedset
+      }
       this.apiService.getNews({ limit:16, summary: input, source: this.state.source, tags: this.state.tagsSearch }).then((data) =>
         this.setState({ news: data.results || [], next: data.next })
       );
@@ -176,8 +193,8 @@ class MainView extends React.Component {
     return ( 
       <div>
         <div className={classes.navbar}>
-
         <div className={classes.banner}>
+
           <div className={classes.logoContainer}>
             <img className={classes.logo} src={logo} alt="Logo" onClick={() => alert(`Treść: ${this.state.newsSearch}\nTagi: ${this.state.tagsSearch}\nŹródło: ${this.state.source}`)}/>
             <div className={classes.logoText}>Threat Trends Tracker</div>
@@ -218,7 +235,9 @@ class MainView extends React.Component {
                 </Select>
               </FormControl>
             </Box>
-            <ArrowDownwardSharpIcon onClick={this.getMoreNews} className={classes.arrow}></ArrowDownwardSharpIcon>
+            <IconButton className={classes.button}>
+              <ArrowDownwardSharpIcon onClick={this.getMoreNews} className={classes.arrow}></ArrowDownwardSharpIcon>
+            </IconButton>
           </div>
         </div>
 
