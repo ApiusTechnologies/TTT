@@ -39,7 +39,6 @@ class SavedSetDropdown extends React.Component{
 
     handleSavedSetChange(event) {
       let searchTerms = ""
-      console.log(this.state.savedsets)
       this.state.savedsets.forEach( (element) => element.name === event.target.value ? searchTerms = element.keywords : function(){})
       let searchString = ''
       searchTerms.forEach( (element) => searchString += element.value+',')
