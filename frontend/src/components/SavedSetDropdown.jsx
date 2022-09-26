@@ -43,6 +43,7 @@ class SavedSetDropdown extends React.Component{
       let searchString = ''
       searchTerms.forEach( (element) => searchString += element.value+',')
       localStorage.setItem('SavedSetSelect', searchString.slice(0, -1))
+      this.setState({ select: event.target.value })
     }
 
     render(){

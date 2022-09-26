@@ -34,21 +34,63 @@ class SavedSetDialog extends React.Component {
             Authorization: 'Token ' + this.cookies.get('token') 
             }
         }).then((data) =>
-            this.setState({ sets: data, checked: new Array(data.length).fill(false) })
+            this.setState({ sets: data, checked: this.savedsetIdsToList(data) })
+            // this.savedsetIdsToList(data)
         );
         if(!this.cookies.get('token')) {
           this.setState({visible: false})
         }
+        
+    }
+
+    savedsetIdsToList(data) {
+      let array = []
+      data.forEach(element => { array.push([element.id, false])
+      });
+      return array
+
+    }
+
+    updateCheckState(data){
+      let checked = this.state.checked
+
+      for (let i=0; i<data.length; i++){
+        for (let j=0; j<checked.length; j++){
+          if(data[i].id===checked[j][0]){
+            checked[j][1] = true
+          }
+        }
+      }
+      this.setState({ checked: checked })
+    }
+
+    updateCheckInProfile() {
+      var checked = this.state.checked
+      var id_array = []
+      checked.forEach((element) => {
+        if(element[1] === true){
+          id_array.push(element[0])
+        }
+      })
+      return id_array
     }
 
     handleChange = (event, index) => {
         let localState = this.state.checked
-        localState[index] = !localState[index]
+        localState[index][1] = !localState[index][1]
         this.setState({ checked : localState })
     };
     
     handleClickOpen = () => {
-        this.setState({ open: true })
+      console.log(this.state.checked)
+      this.apiService.getAuthenticatedUserProfile({}, {
+        headers: {
+          Authorization: 'Token ' + this.cookies.get('token') 
+        }
+       }).then((data) =>
+          this.updateCheckState(data.savedsets)
+      );
+      this.setState({ open: true })
     };
 
     handleClose = () => {
@@ -60,7 +102,7 @@ class SavedSetDialog extends React.Component {
           headers: {
           Authorization: 'Token ' + this.cookies.get('token') 
           }
-      }, { savedsets: [5,6,7,9] })
+      }, { savedsets: this.updateCheckInProfile() })
         this.setState({ open: false })
     };
 
@@ -86,7 +128,7 @@ class SavedSetDialog extends React.Component {
                 {this.state.sets.map((element, index) => ( 
                     <FormControlLabel
                     label={element.name}
-                    control={<Checkbox checked={this.state.checked[index]} onChange={ (e) => this.handleChange(e, index) }/>}
+                    control={<Checkbox checked={this.state.checked[index][1]} onChange={ (e) => this.handleChange(e, index) }/>}
                 />
                 ))}
                 </Box>
