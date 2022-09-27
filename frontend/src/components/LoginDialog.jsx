@@ -25,7 +25,7 @@ export default function LoginDialog() {
   const authService = new AuthService()
   const cookies = new Cookies();
   
-  const [inOrOut, setInOrOut] = React.useState(cookies.get('token') ? 'Logout' : 'Login');
+  const [inOrOut, setInOrOut] = React.useState(cookies.get('token') !== 'undefined' ? 'Logout' : 'Login');
 
   const handleClickOpen = () => {
     if(inOrOut === 'Login'){

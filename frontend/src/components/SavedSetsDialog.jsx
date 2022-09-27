@@ -37,7 +37,7 @@ class SavedSetDialog extends React.Component {
             this.setState({ sets: data, checked: this.savedsetIdsToList(data) })
             // this.savedsetIdsToList(data)
         );
-        if(!this.cookies.get('token')) {
+        if(!this.cookies.get('token') || this.cookies.get('token') === 'undefined') {
           this.setState({visible: false})
         }
         

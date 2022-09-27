@@ -32,7 +32,7 @@ class SavedSetDropdown extends React.Component{
            }).then((data) =>
             this.setState({ savedsets: data.savedsets })
           );
-          if(!this.cookies.get('token')) {
+          if(!this.cookies.get('token') || this.cookies.get('token') === 'undefined') {
             this.setState({visible: false})
           }
     }
