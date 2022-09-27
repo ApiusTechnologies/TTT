@@ -51,3 +51,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def save(self, *args, **kwargs):
+        super(UserProfile, self).save(*args, **kwargs)

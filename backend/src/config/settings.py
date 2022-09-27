@@ -28,9 +28,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Internal
-    'api',
+    # 'api',
     'authentication',
     'parsers',
+    'api.apps.ApiConfig',
 
     # External
     'rest_framework',
