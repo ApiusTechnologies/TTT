@@ -123,27 +123,21 @@ class MainView extends React.Component {
     
   }
 
-
-  validateInput(data){
-    return data.replace("&", "%26")
-  }
-
   handleSourceChange(event) {
     this.setState({ source: event.target.value})
   }
 
   handleNewsSubmit(event) {
-    let savedset = localStorage.getItem('SavedSetSelect')
     if(event.keyCode === 13) {
       event.preventDefault()
-      let input = this.validateInput(event.target.value)
-      if(input && savedset){
-        input+=','+savedset
-      }
-      else if(savedset) {
-        input=savedset
-      }
-      this.apiService.getNews({ limit:16, summary: input, source: this.state.source, tags: this.state.tagsSearch }).then((data) =>
+      const savedSet = localStorage.getItem('SavedSetSelect')
+      const inputValue = event.target.value
+      this.apiService.getNews({ 
+        limit:16, 
+        summary: [savedSet, inputValue].filter(Boolean).join(","), 
+        source: this.state.source, 
+        tags: this.state.tagsSearch 
+      }).then((data) =>
         this.setState({ news: data.results || [], next: data.next })
       );
       this.setState({newsSearch: input})
@@ -151,7 +145,12 @@ class MainView extends React.Component {
   }
 
   handleTagOnClick(index, text) {
-    this.apiService.getNews({ limit:16, tags: text, summary: this.state.newsSearch, source: this.state.source }).then((data) =>
+    this.apiService.getNews({ 
+      limit:16, 
+      tags: text, 
+      summary: this.state.newsSearch, 
+      source: this.state.source 
+    }).then((data) =>
       this.setState({ news: data.results || [], next: data.next })
     );
     this.setState({tagsSearch: text})
@@ -170,7 +169,13 @@ class MainView extends React.Component {
 
   getMoreNews(event) {
     if(this.state.next) {
-        this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1].split('&')[0], summary: this.state.newsSearch, source: this.state.source, tags: this.state.tagsSearch}).then((data) =>
+        this.apiService.getNews({
+          limit:16, 
+          offset: this.state.next.split('offset=')[1].split('&')[0], 
+          summary: this.state.newsSearch, 
+          source: this.state.source, 
+          tags: this.state.tagsSearch
+        }).then((data) =>
           this.setState(prevState => ({
             news: [...prevState.news, ...data.results], next: data.next
           }))

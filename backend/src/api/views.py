@@ -25,8 +25,6 @@ class NewsViewSet(viewsets.ModelViewSet):
     serializer_class = NewsSerializer
     filterset_class = NewsFilter
 
-# @authentication_classes([])
-# @permission_classes([])
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
@@ -57,6 +55,3 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 class SavedSetViewSet(viewsets.ModelViewSet):
     queryset = SavedSet.objects.all()
     serializer_class = SavedSetSerializer
-
-
-

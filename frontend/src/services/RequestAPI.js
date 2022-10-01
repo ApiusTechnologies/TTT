@@ -16,10 +16,12 @@ export class RequestAPI {
   }
 
   createEndpointParams(path, queryParams) {
-    var endpoint = this.getEndpoint(path)
+    const endpoint = this.getEndpoint(path)
 
     if(queryParams) {
-      const paramArray = Object.entries(queryParams).filter(([_, value]) => !!value).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      const paramArray = Object.entries(queryParams)
+        .filter(([_, value]) => Boolean(value))
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       if (paramArray.length > 0) {
         endpoint += `?${paramArray.join("&")}`
       }
@@ -28,7 +30,7 @@ export class RequestAPI {
   }
 
   get(path, queryParams, headers) {
-    var endpoint = this.createEndpointParams(path, queryParams)
+    const endpoint = this.createEndpointParams(path, queryParams)
     
     return new Promise((resolve, reject) => {
       axios
@@ -42,7 +44,7 @@ export class RequestAPI {
 
 
   post(path, queryParams) {
-    var endpoint = this.getEndpoint(path)
+    const endpoint = this.getEndpoint(path)
     return new Promise((resolve, reject) => {
       axios
         .post(endpoint, queryParams)
@@ -54,7 +56,7 @@ export class RequestAPI {
   }
 
   patch(path, queryParams, headers, body) {
-    var endpoint = this.getEndpoint(path)
+    const endpoint = this.getEndpoint(path)
     return new Promise((resolve, reject) => {
       axios
         .patch(endpoint, body, headers )
