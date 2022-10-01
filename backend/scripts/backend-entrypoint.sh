@@ -6,6 +6,9 @@ sh -c '/scripts/wait-for.sh postgres:5432'
 printf "\nMigrating database...\n"
 python manage.py migrate
 
+printf "\nCollecting static files...\n"
+python manage.py collectstatic --noinput
+
 printf "\nCreating superuser...\n"
 python manage.py createsuperuser --no-input \
     --username "$DJANGO_SUPERUSER_USER" --email "$DJANGO_SUPERUSER_EMAIL"

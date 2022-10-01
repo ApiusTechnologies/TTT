@@ -1,8 +1,12 @@
 [tool.poetry]
-name = "backend"
+name = "TTT-backend"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = [
+    "Mateusz Stafiniak <mateusz.stafiniak@apius.pl>",
+    "Jakub Brela <jakub.brela@apius.pl>",
+    "Marcin Wojciechowski <wojc.marcin@gmail.com>"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -14,6 +18,11 @@ django-cors-headers = "^3.13.0"
 tweepy = "^4.10.0"
 psycopg2-binary = "^2.9.3"
 requests = "^2.28.1"
+django-environ = "^0.9.0"
+celery = "^5.2.7"
+PyYAML = "^6.0"
+argh = "^0.26.2"
+watchdog = {extras = ["watchmedo"], version = "^2.1.9"}
 
 [tool.poetry.dev-dependencies]
 

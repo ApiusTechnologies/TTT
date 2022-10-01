@@ -1,16 +1,69 @@
 import os
+import environ
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env = environ.Env(
+    # DJANGO CONFIG
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1', '[::1]']),
+    SECRET_KEY=(str),
+
+    # DATA SOURCES
+    TWITTER_BEARER_TOKEN=(str, None),
+
+    # DATABASE
+    POSTGRES_DB=(str, 'postgres'),
+    POSTGRES_USER=(str, 'postgres'),
+    POSTGRES_PASSWORD=(str, 'postgres'),
+    POSTGRES_HOST=(str, 'postgres'),
+    POSTGRES_PORT=(str, '5432'),
+
+    # CELERY
+    RABBITMQ_DEFAULT_USER=(str, 'admin'),
+    RABBITMQ_DEFAULT_PASS=(str, 'pass'),
+    RABBITMQ_URL=(str, 'rabbit:5672'),
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 #
 # Config variables
 #
 
-DEBUG = os.environ.get('DEBUG', False)
-ALLOWED_HOSTS = os.environ.get(
-    'ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
-TWITTER_BEARER_TOKEN = os.environ.get("TWITTER_BEARER_TOKEN")
-SECRET_KEY = os.environ.get('SECRET_KEY')
+DEBUG = env("DEBUG")
+ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+TWITTER_BEARER_TOKEN = env("TWITTER_BEARER_TOKEN")
+SECRET_KEY = env('SECRET_KEY')
+
+# Data sources
+TWITTER_SOURCE_LIST = [
+    {
+        "id": 951757923075674112,
+        "name": "@CERT_OPL"
+    },
+    {
+        "id": 1158139840866791424,
+        "name": "@vxunderground"
+    }
+]
+
+RSS_SOURCE_LIST = [
+    {
+        "url": "https://www.cert.pl/feed/",
+        "href_field": "link",
+        "date_field": "published_parsed",
+    },
+    {
+        "url": "http://feeds.feedburner.com/sekurak",
+        "href_field": "link",
+        "date_field": "published_parsed",
+    },
+    {
+        "url": "https://feeds.feedburner.com/niebezpiecznik/",
+        "href_field": "link",
+        "date_field": "updated",
+    }
+]
 
 #
 # Application definition
@@ -23,8 +76,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sessions',
     'django.contrib.staticfiles',
 
     # Internal
@@ -33,10 +86,10 @@ INSTALLED_APPS = [
     'parsers.apps.ParsersConfig',
 
     # External
-    'rest_framework',
-    'rest_framework.authtoken',
-    'django_filters',
     'corsheaders',
+    'django_filters',
+    'rest_framework.authtoken',
+    'rest_framework',
 ]
 
 REST_FRAMEWORK = {
@@ -54,7 +107,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
-    
+
 }
 
 MIDDLEWARE = [
@@ -86,14 +139,21 @@ ROOT_URLCONF = 'config.urls'
 
 ASGI_APPLICATION = 'config.asgi.application'
 
+RABBITMQ_USER = env('RABBITMQ_DEFAULT_USER')
+RABBITMQ_PASS = env('RABBITMQ_DEFAULT_PASS')
+RABBITMQ_URL = env('RABBITMQ_URL')
+
+CELERY_BROKER_URL = f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_URL}//'
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB', 'postgres'),
-        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'postgres'),
-        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT'),
     }
 }
 
@@ -126,3 +186,5 @@ USE_TZ = True
 CORS_ORIGIN_ALLOW_ALL = True
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = '/static'
