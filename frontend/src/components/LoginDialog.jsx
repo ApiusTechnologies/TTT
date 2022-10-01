@@ -1,14 +1,15 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import AuthService from "../services/AuthService"
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Cookies from 'universal-cookie';
+import Typography from '@mui/material/Typography';
 
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -27,15 +28,14 @@ export default function LoginDialog() {
   const authService = new AuthService()
   const cookies = new Cookies();
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(cookies.get('token') !== 'undefined');
+  const [isLoggedIn, setIsLoggedIn] = React.useState(cookies.get('token') && cookies.get('token') !== 'undefined');
 
   const handleClickOpen = () => {
     if (isLoggedIn) {
       setOpen(true);
-      setIsLoggedIn(!isLoggedIn);
     } else {
       cookies.remove('token');
-      setIsLoggedIn(!isLoggedIn);
+      setIsLoggedIn(false);
     }
   };
 
@@ -81,11 +81,14 @@ export default function LoginDialog() {
     <div>
 
       <Button variant="outlined" onClick={handleClickOpen} style={button}>
-        {isLoggedIn}
+
+      <Typography variant="h5">
+        {isLoggedIn ? "Logout" : "Login"}
+      </Typography>
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Login</DialogTitle>
-        <Alert severity="error" style={{ display: errorAlertVisible ? "block" : "none" }}>
+        <Alert severity="error" sx={{ display: errorAlertVisible ? "block" : "none" }}>
           <AlertTitle>Error</AlertTitle>
           This is not a valid Email address.
         </Alert>

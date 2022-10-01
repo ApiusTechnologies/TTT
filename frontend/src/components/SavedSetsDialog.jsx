@@ -1,12 +1,12 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 import Checkbox from '@mui/material/Checkbox';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import ApiService from "../services/ApiService";
@@ -27,17 +27,18 @@ class SavedSetDialog extends React.Component {
   }
 
   componentDidMount() {
+    const token = this.cookies.get('token')
+    if(!token || token === 'undefined'){
+      this.setState({ visible: false })
+      return
+    }
     this.apiService.getSavedSet({}, {
       headers: {
-        Authorization: 'Token ' + this.cookies.get('token')
+        Authorization: 'Token ' + token
       }
     }).then((data) =>
       this.setState({ sets: data, checked: this.savedsetIdsToList(data) })
     );
-    if (!this.cookies.get('token') || this.cookies.get('token') === 'undefined') {
-      this.setState({ visible: false })
-    }
-
   }
 
   savedsetIdsToList(data) {
@@ -124,6 +125,7 @@ class SavedSetDialog extends React.Component {
               <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
                 {this.state.sets.map((element, index) => (
                   <FormControlLabel
+                    key={index}
                     label={element.name}
                     control={<Checkbox checked={this.state.checked[index][1]} onChange={(e) => this.handleChange(e, index)} />}
                   />

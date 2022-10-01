@@ -1,20 +1,19 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
-import { withStyles } from "@material-ui/core/styles";
+import TextField from "@mui/material/TextField";
+import { withStyles } from "@mui/styles";
+import IconButton from "@mui/material/IconButton";
 import Tiles from "./Tiles";
 import SideBar from "./SideBar";
 import ApiService from "../services/ApiService"
-import logo from "../graphics/logo.png";
-import ArrowDownwardSharpIcon from "@mui/icons-material/ArrowDownwardSharp";
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Cookies from 'universal-cookie';
-import IconButton from "@material-ui/core/IconButton";
+import {ArrowDownwardSharp} from '@mui/icons-material';
 
-const useStyles = () => ({
+const useStyles = (theme) => ({
   searchTags: {
     "& > *": {
       width: "100%",
@@ -41,7 +40,6 @@ const useStyles = () => ({
     backgroundColor: "white",
   },
   mainViewWrapper: {
-    backgroundColor: "white",
     width: `calc(100vw - 201px)`,
     paddingLeft: "201px",
     paddingTop: "10vh",
@@ -49,7 +47,7 @@ const useStyles = () => ({
   logo: {
     height: "3vh",
     display: "inline-block",
-    
+    marginTop: "2px",
   },
   logoContainer: {
     textAlign: "center",
@@ -63,8 +61,7 @@ const useStyles = () => ({
   banner: {
     width: "100%",
     height: "4vh",
-    backgroundColor: "#2b2b69",
-    // position: "fixed",
+    backgroundColor: theme.palette.primary.main,
   },
   arrow: {
     transform: `scale(3.2)`,
@@ -86,7 +83,7 @@ const useStyles = () => ({
     paddingLeft: "205px",
     width: `calc(100vw - 201px)`,
     zIndex: "4",
-
+    top: 0,
   }
 });
 
@@ -132,15 +129,16 @@ class MainView extends React.Component {
       event.preventDefault()
       const savedSet = localStorage.getItem('SavedSetSelect')
       const inputValue = event.target.value
+      const searchFilter = [savedSet, inputValue].filter(Boolean).join(",")
       this.apiService.getNews({ 
         limit:16, 
-        summary: [savedSet, inputValue].filter(Boolean).join(","), 
+        summary: searchFilter, 
         source: this.state.source, 
         tags: this.state.tagsSearch 
       }).then((data) =>
         this.setState({ news: data.results || [], next: data.next })
       );
-      this.setState({newsSearch: input})
+      this.setState({newsSearch: searchFilter})
     }
   }
 
@@ -196,14 +194,13 @@ class MainView extends React.Component {
     const { classes } = this.props;
 
     return ( 
-      <div>
+      <>
         <div className={classes.navbar}>
         <div className={classes.banner}>
 
-          <div className={classes.logoContainer}>
-            <img className={classes.logo} src={logo} alt="Logo" onClick={() => alert(`Treść: ${this.state.newsSearch}\nTagi: ${this.state.tagsSearch}\nŹródło: ${this.state.source}`)}/>
+          <div className={classes.logoContainer} onClick={() => alert(`Treść: ${this.state.newsSearch}\nTagi: ${this.state.tagsSearch}\nŹródło: ${this.state.source}`)}>
+            <img className={classes.logo} src="/logo.png" alt="Logo" />
             <div className={classes.logoText}>Threat Trends Tracker</div>
-            
           </div>
         </div>
         <div className={classes.formsContainer}>
@@ -240,8 +237,8 @@ class MainView extends React.Component {
                 </Select>
               </FormControl>
             </Box>
-            <IconButton className={classes.button}>
-              <ArrowDownwardSharpIcon onClick={this.getMoreNews} className={classes.arrow}></ArrowDownwardSharpIcon>
+            <IconButton className={classes.button} onClick={this.getMoreNews}>
+              <ArrowDownwardSharp className={classes.arrow}></ArrowDownwardSharp>
             </IconButton>
           </div>
         </div>
@@ -253,7 +250,7 @@ class MainView extends React.Component {
             <Tiles news={this.state.news} />
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
