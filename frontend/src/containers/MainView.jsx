@@ -11,6 +11,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Cookies from 'universal-cookie';
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = () => ({
   searchTags: {
@@ -67,8 +69,12 @@ const useStyles = () => ({
   arrow: {
     transform: `scale(3.2)`,
     color: "lightgrey",
-    paddingTop: "1vh",
-    paddingLeft: "18px",
+  },
+  button: {
+    color: "lightgrey",
+    marginLeft: "28px",
+    borderRadius: "0",
+    width: "70px",
   },
   selectSource: {
     paddingTop: "1vh",
@@ -79,6 +85,7 @@ const useStyles = () => ({
     position: "fixed",
     paddingLeft: "205px",
     width: `calc(100vw - 201px)`,
+    zIndex: "4",
 
   }
 });
@@ -94,13 +101,16 @@ class MainView extends React.Component {
       newsSearch: "",
       next: "",
       source: "",
+      savedset: "",
     };
     this.handleTagSubmit = this.handleTagSubmit.bind(this);
     this.handleNewsSubmit = this.handleNewsSubmit.bind(this);
     this.getMoreNews = this.getMoreNews.bind(this);
     this.handleSourceChange = this.handleSourceChange.bind(this);
+    this.handleTagOnClick = this.handleTagOnClick.bind(this);
 
     this.apiService = new ApiService()
+    this.cookies = new Cookies();
   }
 
   componentDidMount() {
@@ -110,10 +120,7 @@ class MainView extends React.Component {
     this.apiService.getTags().then((data) =>
       this.setState({ tags: data || [] })
     );
-  }
-
-  validateInput(data){
-    return data.replace("&", "%26")
+    
   }
 
   handleSourceChange(event) {
@@ -123,12 +130,31 @@ class MainView extends React.Component {
   handleNewsSubmit(event) {
     if(event.keyCode === 13) {
       event.preventDefault()
-      const input = this.validateInput(event.target.value)
-      this.apiService.getNews({ limit:16, summary: input, source: this.state.source }).then((data) =>
+      const savedSet = localStorage.getItem('SavedSetSelect')
+      const inputValue = event.target.value
+      this.apiService.getNews({ 
+        limit:16, 
+        summary: [savedSet, inputValue].filter(Boolean).join(","), 
+        source: this.state.source, 
+        tags: this.state.tagsSearch 
+      }).then((data) =>
         this.setState({ news: data.results || [], next: data.next })
       );
       this.setState({newsSearch: input})
     }
+  }
+
+  handleTagOnClick(index, text) {
+    this.apiService.getNews({ 
+      limit:16, 
+      tags: text, 
+      summary: this.state.newsSearch, 
+      source: this.state.source 
+    }).then((data) =>
+      this.setState({ news: data.results || [], next: data.next })
+    );
+    this.setState({tagsSearch: text})
+
   }
 
   handleTagSubmit(event) {
@@ -142,16 +168,28 @@ class MainView extends React.Component {
   }
 
   getMoreNews(event) {
-    this.apiService.getNews({limit:16, offset: this.state.next.split('offset=')[1], summary: this.state.newsSearch, source: this.state.source}).then((data) =>
-      this.setState(prevState => ({
-        news: [...prevState.news, ...data.results], next: data.next
-      }))
-    );
-    window.scrollBy({
-      top: window.innerHeight,
-      behavior: 'smooth'
-    })
-  }
+    if(this.state.next) {
+        this.apiService.getNews({
+          limit:16, 
+          offset: this.state.next.split('offset=')[1].split('&')[0], 
+          summary: this.state.newsSearch, 
+          source: this.state.source, 
+          tags: this.state.tagsSearch
+        }).then((data) =>
+          this.setState(prevState => ({
+            news: [...prevState.news, ...data.results], next: data.next
+          }))
+        );
+        window.scrollBy({
+          top: window.innerHeight,
+          behavior: 'smooth'
+        })
+      }
+      else {
+        alert("No more entries with given filters.")
+      }
+    }
+      
 
 
   render() {
@@ -160,11 +198,12 @@ class MainView extends React.Component {
     return ( 
       <div>
         <div className={classes.navbar}>
-
         <div className={classes.banner}>
+
           <div className={classes.logoContainer}>
-            <img className={classes.logo} src={logo} alt="Logo"/>
+            <img className={classes.logo} src={logo} alt="Logo" onClick={() => alert(`Treść: ${this.state.newsSearch}\nTagi: ${this.state.tagsSearch}\nŹródło: ${this.state.source}`)}/>
             <div className={classes.logoText}>Threat Trends Tracker</div>
+            
           </div>
         </div>
         <div className={classes.formsContainer}>
@@ -201,14 +240,16 @@ class MainView extends React.Component {
                 </Select>
               </FormControl>
             </Box>
-            <ArrowDownwardSharpIcon onClick={this.getMoreNews} className={classes.arrow}></ArrowDownwardSharpIcon>
+            <IconButton className={classes.button}>
+              <ArrowDownwardSharpIcon onClick={this.getMoreNews} className={classes.arrow}></ArrowDownwardSharpIcon>
+            </IconButton>
           </div>
         </div>
 
         <div className={classes.mainViewWrapper}>
           
           <div>
-            <SideBar tags={this.state.tags} />
+            <SideBar onClickFunc={this.handleTagOnClick} tags={this.state.tags} />
             <Tiles news={this.state.news} />
           </div>
         </div>

@@ -16,9 +16,16 @@ export class ApiService {
     }
 
 
-    async getUserProfile(params) {
-        return this.requestAPI.get("api/userprofile/", params)
+    async getAuthenticatedUserProfile(params, headers) {
+        return this.requestAPI.get("api/userprofile/self/", params, headers)
     }
 
+    async patchAuthenticatedUserProfile(params, headers, body) {
+        return this.requestAPI.patch("api/userprofile/self/", params, headers, body)
+    }
+
+    async getSavedSet(params, headers) {
+        return this.requestAPI.get("api/savedset/", params, headers)
+    }
 
 } export default ApiService;

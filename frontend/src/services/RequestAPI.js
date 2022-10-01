@@ -2,7 +2,7 @@ import axios from "axios";
 
 export class RequestAPI {
   getEndpoint(path) {
-    const HOST = "http://192.168.68.107:8000";
+    const HOST = "http://192.168.211.209:8000";
     return `${HOST}/${path}`;
   }
 
@@ -16,10 +16,12 @@ export class RequestAPI {
   }
 
   createEndpointParams(path, queryParams) {
-    var endpoint = this.getEndpoint(path)
+    const endpoint = this.getEndpoint(path)
 
     if(queryParams) {
-      const paramArray = Object.entries(queryParams).filter(([_, value]) => !!value).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      const paramArray = Object.entries(queryParams)
+        .filter(([_, value]) => Boolean(value))
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       if (paramArray.length > 0) {
         endpoint += `?${paramArray.join("&")}`
       }
@@ -27,12 +29,12 @@ export class RequestAPI {
     return endpoint
   }
 
-  get(path, queryParams) {
-    var endpoint = this.createEndpointParams(path, queryParams)
+  get(path, queryParams, headers) {
+    const endpoint = this.createEndpointParams(path, queryParams)
     
     return new Promise((resolve, reject) => {
       axios
-        .get(endpoint)
+        .get(endpoint, headers)
         .then((response) => {
 
           resolve(this.validateResponse(response))
@@ -42,10 +44,22 @@ export class RequestAPI {
 
 
   post(path, queryParams) {
-    var endpoint = this.getEndpoint(path)
+    const endpoint = this.getEndpoint(path)
     return new Promise((resolve, reject) => {
       axios
         .post(endpoint, queryParams)
+        .then((response) => {
+          resolve(this.validateResponse(response))
+
+        });
+    });
+  }
+
+  patch(path, queryParams, headers, body) {
+    const endpoint = this.getEndpoint(path)
+    return new Promise((resolve, reject) => {
+      axios
+        .patch(endpoint, body, headers )
         .then((response) => {
           resolve(this.validateResponse(response))
 
