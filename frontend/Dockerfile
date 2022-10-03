@@ -2,10 +2,9 @@ FROM node:16.17.1-alpine3.16
 
 WORKDIR /app
 
-# COPY package.json ./
-# COPY package-lock.json ./
-# RUN npm install
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
 
-# COPY . ./
+COPY . ./
 
 CMD ["npm", "start"]

@@ -28,10 +28,12 @@ class TwitterParser(AbstractParser):
             self.logger.warning("Twitter not enabled, skipping...")
             return
         twitter_filter = News.objects.filter(source__contains=f'Twitter{name}')
-        if(twitter_filter.count() == 0):
-            startTime =  (datetime.now()-timedelta(days=21)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        if (twitter_filter.count() == 0):
+            startTime = (datetime.now() - timedelta(days=21)
+                         ).strftime("%Y-%m-%dT%H:%M:%SZ")
         else:
-            startTime = twitter_filter[0].date.isoformat().replace('+00:00', 'Z')
+            startTime = twitter_filter[0].date.isoformat().replace(
+                '+00:00', 'Z')
 
         tweets = tweepy.Paginator(
             self.twitter_client.get_users_tweets,
@@ -49,7 +51,7 @@ class TwitterParser(AbstractParser):
             href = f'https://twitter.com/twitter/status/{tweet.id}'
             news, news_created = News.objects.get_or_create(
                 title=title, summary=summary, source=name, href=href, date=tweet.created_at)
-            if(news_created):
+            if (news_created):
                 tagOrange, _ = Tag.objects.get_or_create(name=name)
                 tagTwitter, _ = Tag.objects.get_or_create(name='Twitter')
                 news.tags.add(tagOrange)

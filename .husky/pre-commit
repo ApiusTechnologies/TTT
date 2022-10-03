@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Get staged files
+JS_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -e ".js$" -e ".jsx$" | grep -v "eslint" | sed 's| |\\ |g')
+PY_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -e ".py$" | sed 's| |\\ |g')
+
+echo "Linting frontend..."
+if [ -n "$JS_FILES" ]
+then
+    npm run --prefix frontend lint:husky -- ${JS_FILES//frontend\//} --fix
+    git add ${JS_FILES}
+    echo "Fixed: " ${JS_FILES}
+else
+    echo "No frontend files to lint."
+fi
+
+echo "Linting backend..."
+if [ -n "$PY_FILES" ]
+then
+    cd backend
+    poetry run autopep8 --in-place --aggressive ${PY_FILES//backend\//}
+    cd ..
+    git add ${PY_FILES}
+    echo "Fixed: " ${PY_FILES}
+else
+    echo "No backend files to lint."
+fi

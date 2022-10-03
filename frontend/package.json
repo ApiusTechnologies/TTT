@@ -17,11 +17,17 @@
     "react-scripts": "^5.0.1",
     "universal-cookie": "^4.0.4"
   },
+  "devDependencies": {
+    "eslint": "^8.24.0",
+    "eslint-plugin-react": "^7.31.8"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject",
+    "lint:husky": "eslint . --ignore-pattern node_modules/ --ignore-pattern __tests__/ --ignore-pattern .eslintrc.js",
+    "lint": "npm run lint:husky -- --ext .js,.jsx"
   },
   "eslintConfig": {
     "extends": "react-app"
