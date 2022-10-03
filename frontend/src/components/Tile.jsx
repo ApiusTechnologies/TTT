@@ -1,11 +1,12 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Grow from "@material-ui/core/Grow";
+import { makeStyles } from "@mui/styles";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Grow from "@mui/material/Grow";
+import { Box } from "@mui/material";
 
 const useStyles = makeStyles({
   root: {
@@ -16,22 +17,10 @@ const useStyles = makeStyles({
   content: {
     minHeight: 145,
   },
-  title: {
-    fontSize: 18,
-    textAlign: "left",
-    fontFamily: "Chakra Petch",
-  },
-  summary: {
-    fontSize: 16,
-    textAlign: "left",
-    fontFamily: "Chakra Petch",
-  },
   source: {
     marginBottom: "12px",
     border: "1px solid grey",
-    fontFamily: "Bebas Neue",
     fontSize: 30,
-    backgroundColor: (props) => props.news?.source?.includes('@') ? "#1DA1F2" : "black",
     color: "white",
   },
 });
@@ -39,19 +28,22 @@ const useStyles = makeStyles({
 
 export default function Tile(props) {
   const classes = useStyles(props);
- 
+
   return (
     <div >
-      <Grow in={true}  timeout={1500} >
+      <Grow in={true} timeout={1500} >
         <Card className={classes.root} variant="outlined">
-          
           <CardContent>
-            <div className={classes.source}>{props.news.source}</div>
-
+            <Box className={classes.source} sx={{
+                backgroundColor: props.news?.source?.includes('@') ? "#1DA1F2" : "black",
+              }}>
+              <Typography variant="h4">
+                {props.news.source}
+              </Typography>
+            </Box>
             <div className={classes.content}>
               <Typography
                 variant="h5"
-                component="h2"
                 className={classes.title}
                 color="textSecondary"
                 gutterBottom
@@ -60,14 +52,12 @@ export default function Tile(props) {
               </Typography>
               <Typography
                 className={classes.summary}
-                variant="h5"
-                component="h2"
+                variant="body1"
               >
                 {props.news.summary ? props.news.summary.split("<")[0] : "No summary"}
               </Typography>
             </div>
           </CardContent>
-
           <CardActions>
             <Button href={props.news.href} size="small">
               LEARN MORE

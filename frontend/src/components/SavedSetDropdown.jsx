@@ -23,16 +23,18 @@ class SavedSetDropdown extends React.Component {
 
   componentDidMount() {
     localStorage.setItem('SavedSetSelect', "")
+    const token = this.cookies.get('token')
+    if (!token || token === 'undefined') {
+      this.setState({ visible: false })
+      return
+    }
     this.apiService.getAuthenticatedUserProfile({}, {
       headers: {
-        Authorization: 'Token ' + this.cookies.get('token')
+        Authorization: 'Token ' + token
       }
     }).then((data) =>
       this.setState({ savedsets: data.savedsets })
     );
-    if (!this.cookies.get('token') || this.cookies.get('token') === 'undefined') {
-      this.setState({ visible: false })
-    }
   }
 
   handleSavedSetChange(event) {
@@ -56,7 +58,7 @@ class SavedSetDropdown extends React.Component {
             onChange={this.handleSavedSetChange}
           >
             {this.state.savedsets.map((element, index) => (
-              <MenuItem value={element.name}>{element.name}</MenuItem>
+              <MenuItem key={index} value={element.name}>{element.name}</MenuItem>
             ))}
 
           </Select>

@@ -1,6 +1,6 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Divider from "@material-ui/core/Divider";
+import { makeStyles } from "@mui/styles";
+import Divider from "@mui/material/Divider";
 import Tile from "../components/Tile";
 
 const useStyles = makeStyles({
@@ -17,8 +17,8 @@ export default function Tiles(props) {
     <div style={{ display: "block" }}>
       <Divider />
       <div className={classes.root}>
-        {props.news.map((element) => (
-          <Tile news={element} />
+        {props.news.map((element, index) => (
+          <Tile key={index} news={element} />
         ))}
       </div>
     </div>

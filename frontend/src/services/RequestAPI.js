@@ -1,9 +1,17 @@
 import axios from "axios";
 
 export class RequestAPI {
+  
+  constructor(host, port) {
+    if(host) {
+      this.host = `http://${host}${port ? ":" + port : ""}`
+    } else {
+      this.host = ""
+    }
+  }
+
   getEndpoint(path) {
-    const HOST = "http://192.168.211.209:8000";
-    return `${HOST}/${path}`;
+    return `${this.host}/${path}`;
   }
 
 
@@ -23,7 +31,7 @@ export class RequestAPI {
         .filter(([_, value]) => Boolean(value))
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       if (paramArray.length > 0) {
-        endpoint += `?${paramArray.join("&")}`
+        return endpoint + `?${paramArray.join("&")}`
       }
     }
     return endpoint

@@ -1,13 +1,13 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import { makeStyles } from "@mui/styles";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
 import LoginDialog from "../components/LoginDialog";
 import SavedSetDropdown from "../components/SavedSetDropdown";
 import SavedSetsDialog from "../components/SavedSetsDialog";
+import { Typography } from "@mui/material";
 
 const drawerWidth = 200;
 
@@ -67,12 +67,14 @@ function SideBar(props) {
         {props.tags
           .map((o) => o.name)
           .map((text, index) => (
-            <>
-              <ListItem button key={text} onClick={() => props.onClickFunc(index, text)} >
-                <ListItemText primary={text} />
+            <div key={index}>
+              <ListItem button onClick={() => props.onClickFunc(index, text)} >
+                <Typography variant="body2">
+                  {text}
+                </Typography>
               </ListItem>
               <Divider />
-            </>
+            </div>
           ))}
       </List>
     </Drawer>
