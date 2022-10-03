@@ -1,0 +1,64 @@
+version: "3.3"
+
+services:
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 3000:3000
+    environment:
+      - REACT_APP_URL=localhost
+    volumes:
+      - ./frontend:/app
+
+  backend:
+    build: backend
+    volumes:
+      - ./backend/src:/app
+      - ./backend/scripts:/scripts
+    env_file:
+      - .env
+    entrypoint: /scripts/backend-entrypoint.sh
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+
+  celery:
+    build: backend
+    volumes:
+      - ./backend/src:/app
+      - ./backend/scripts:/scripts
+    env_file:
+      - .env
+    entrypoint: /scripts/celery-entrypoint.sh
+    depends_on:
+      - backend
+      - rabbit
+
+  rabbit:
+    image: rabbitmq:3.8.9-management-alpine
+    env_file:
+      - .env
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  flower:
+    image: mher/flower:0.9.5
+    env_file:
+      - .env
+    ports:
+      - 5555:5555
+    depends_on:
+      - rabbit
+
+  postgres:
+    image: postgres:13.1-alpine
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+
+volumes:
+  pgdata:
