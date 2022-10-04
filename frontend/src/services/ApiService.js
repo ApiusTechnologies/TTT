@@ -1,31 +1,38 @@
-import RequestAPI from "./RequestAPI";
+import RequestAPI from './RequestAPI';
 
 export class ApiService {
     constructor() {
-        this.requestAPI = new RequestAPI()
+        this.requestAPI = new RequestAPI();
     }
 
 
-    async getNews(params) {
-        return this.requestAPI.get("api/news/", params)
+    async getNews(queryParams) {
+        return this.requestAPI.get('api/news/', { queryParams });
     }
 
 
-    async getTags(params) {
-        return this.requestAPI.get("api/tag/", params)
+    async getTags(queryParams) {
+        return this.requestAPI.get('api/tag/', { queryParams });
     }
 
 
-    async getAuthenticatedUserProfile(params, headers) {
-        return this.requestAPI.get("api/userprofile/self/", params, headers)
+    async getAuthenticatedUserProfile() {
+        return this.requestAPI.get('api/userprofile/self/', {
+            requiresAuthorization: true
+        });
     }
 
-    async patchAuthenticatedUserProfile(params, headers, body) {
-        return this.requestAPI.patch("api/userprofile/self/", params, headers, body)
+    async patchAuthenticatedUserProfile(savedsets) {
+        return this.requestAPI.patch('api/userprofile/self/', {
+            body: { savedsets },
+            requiresAuthorization: true
+        });
     }
 
-    async getSavedSet(params, headers) {
-        return this.requestAPI.get("api/savedset/", params, headers)
+    async getSavedSets() {
+        return this.requestAPI.get('api/savedset/', { 
+            requiresAuthorization: true
+        });
     }
 
 } export default ApiService;

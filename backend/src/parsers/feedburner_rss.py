@@ -32,7 +32,7 @@ class FeedburnerRss(AbstractParser):
             title = entry['title']
             summary = entry['summary']
 
-            if type(date) is not str:
+            if not isinstance(date, str):
                 date = time.strftime('%Y-%m-%dT%H:%M:%SZ', date)
 
             news, news_created = News.objects.get_or_create(
@@ -41,7 +41,7 @@ class FeedburnerRss(AbstractParser):
                 source=source,
                 href=href,
                 date=date)
-            if(news_created):
+            if (news_created):
                 for tag_entry in entry['tags']:
                     tag, _ = Tag.objects.get_or_create(name=tag_entry['term'])
                     news.tags.add(tag)

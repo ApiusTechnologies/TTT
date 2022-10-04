@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 
+
 class Tag(models.Model):
     name = models.CharField(name='name', default='', max_length=256)
 
@@ -24,6 +25,7 @@ class News(models.Model):
         ordering = ['-date']
         verbose_name_plural = "News"
 
+
 class TwitterAccount(models.Model):
     name = models.CharField(name='name', max_length=256)
     user_id = models.CharField(name='user_id', max_length=256)
@@ -38,12 +40,14 @@ class Keyword(models.Model):
     def __str__(self):
         return f'{self.value}'
 
+
 class SavedSet(models.Model):
     name = models.CharField(name='name', null=True, max_length=256)
     keywords = models.ManyToManyField(Keyword)
 
     def __str__(self):
         return f'{self.name}'
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

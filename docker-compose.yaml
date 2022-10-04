@@ -10,6 +10,8 @@ services:
       - REACT_APP_URL=localhost
     volumes:
       - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
 
   backend:
     build: backend
