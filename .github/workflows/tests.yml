@@ -16,7 +16,14 @@ jobs:
         mv .env.example .env
         docker-compose up -d backend
     - name: Test backend
-      run: docker-compose exec -T backend python manage.py test
+      run: docker-compose exec -T backend coverage run --source='.' manage.py test
+    - name: Make coverage report
+      run: |
+        docker-compose exec -T backend coverage xml -o /scripts/cobertura-coverage.backend.xml
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cobertura-coverage.backend
+        path: backend/scripts/cobertura-coverage.backend.xml
       
   test-frontend:
     runs-on: ubuntu-latest
@@ -27,4 +34,31 @@ jobs:
         mv .env.example .env
         docker-compose up -d frontend
     - name: Test frontend
-      run: docker-compose exec -T frontend npm run test -- --ci --coverage
+      run: docker-compose exec -T frontend npm run test -- --ci --coverage --coverageReporters cobertura
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cobertura-coverage.frontend
+        path: frontend/coverage/cobertura-coverage.xml
+  
+  coverage-report:
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: cobertura-coverage.backend
+    - uses: actions/download-artifact@v2
+      with:
+        name: cobertura-coverage.frontend
+    - name: Code Coverage Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: ./**/cobertura-coverage.*
+        badge: true
+        fail_below_min: false
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '60 80'

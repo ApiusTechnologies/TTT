@@ -9,7 +9,7 @@ ENV PIP_DEFAULT_TIMEOUT=100 \
 
 RUN pip install "poetry==$POETRY_VERSION"
 COPY pyproject.toml poetry.lock ./
-RUN poetry export --output requirements.txt --without-hashes
+RUN poetry export --output requirements.txt --without-hashes --dev
 RUN pip install --target /root/.local/lib/python3.9/site-packages --requirement requirements.txt
 
 FROM base AS final
