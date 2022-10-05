@@ -21,7 +21,7 @@ class KeywordSerializer(serializers.ModelSerializer):
 
 
 class SavedSetSerializer(serializers.ModelSerializer):
-    keywords = KeywordSerializer(many=True, read_only=True)
+    keywords = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = SavedSet

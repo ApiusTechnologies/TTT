@@ -7,11 +7,11 @@ export class AuthService {
 
 
     async getToken(username, password) {
-        return this.requestAPI.post('auth/token-auth/', {username, password});
+        return this.requestAPI.post('auth/token-auth/', {body: {username, password}});
     }
 
 
     async register(username, password, password2, email) {
-        return this.requestAPI.post('auth/register/', {username, password, password2, email});
+        return this.requestAPI.post('auth/register/', {body: {username, password, password2, email}});
     }
 } export default AuthService;
