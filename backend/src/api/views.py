@@ -1,10 +1,6 @@
 import json
-from django.forms.models import model_to_dict
-from django.shortcuts import render
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
-from rest_framework import viewsets, status
-from itertools import chain
-from .models import News, Tag, TwitterAccount, UserProfile, SavedSet
+from rest_framework import viewsets
+from .models import News, Tag, UserProfile, SavedSet
 from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer, SavedSetSerializer
 from .filters import NewsFilter, TagFilter
 from rest_framework.decorators import authentication_classes, permission_classes, action
@@ -26,6 +22,13 @@ class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     filterset_class = NewsFilter
+
+
+@authentication_classes([])
+@permission_classes([])
+class SavedSetViewSet(viewsets.ModelViewSet):
+    queryset = SavedSet.objects.all()
+    serializer_class = SavedSetSerializer
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
@@ -53,8 +56,3 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         profile.savedsets.set(savedsets)
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data)
-
-
-class SavedSetViewSet(viewsets.ModelViewSet):
-    queryset = SavedSet.objects.all()
-    serializer_class = SavedSetSerializer

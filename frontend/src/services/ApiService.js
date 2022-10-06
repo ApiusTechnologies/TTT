@@ -29,7 +29,7 @@ export class ApiService {
         });
     }
 
-    async getSavedSets() {
+    async getPresets() {
         return this.requestAPI.get('api/savedset/', { 
             requiresAuthorization: true
         });

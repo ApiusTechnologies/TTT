@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 export class RequestAPI {
 
@@ -8,6 +9,7 @@ export class RequestAPI {
         } else {
             this.host = '';
         }
+        this.cookies = new Cookies();
     }
 
     getEndpoint(path) {
@@ -39,21 +41,26 @@ export class RequestAPI {
     }
 
     async makeRequest(path, options, method = axios.get) {
-        const { queryParams, body, headers, requiresAuthorization } = options;
+        const { 
+            queryParams = {},
+            body = {},
+            headers = {},
+            requiresAuthorization = false
+        } = options;
         const endpoint = this.getQueryParamString(path, queryParams);
 
-        const requestHeaders = { headers };
+        const config = { headers };
 
         if (requiresAuthorization === true) {
             const token = this.cookies.get('token');
-            requestHeaders.headers.Authorization = token && 'Token ' + token;
+            config.headers.Authorization = token && 'Token ' + token;
         }
 
         return new Promise((resolve, _) => {
-            method(endpoint, body, requestHeaders)
-                .then((response) => {
-                    resolve(this.validateResponse(response));
-                })
+            const promise = method === axios.get ? method(endpoint, config) : method(endpoint, body, config);
+            promise.then((response) => {
+                resolve(this.validateResponse(response));
+            })
                 .catch(() => {
                     console.error('Unable to connect to service.');
                     resolve();
@@ -62,6 +69,9 @@ export class RequestAPI {
     }
 
     async get(path, options) {
+        if(Object.prototype.hasOwnProperty.call(options, 'body')) {
+            throw new Error('GET requests cannot have body parameter.');
+        }
         return this.makeRequest(path, options, axios.get);
     }
 
