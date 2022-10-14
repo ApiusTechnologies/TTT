@@ -35,4 +35,5 @@ export class ApiService {
         });
     }
 
-} export default ApiService;
+}
+export default ApiService;
