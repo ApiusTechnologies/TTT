@@ -40,7 +40,7 @@ const App = () => {
             });
             await apiService.getTags().then((data) => {
                 if (!data) return;
-                setTags(data || []);
+                setTags(data.sort((a, b) => b.count - a.count) || []);
             });
             await apiService.getAuthenticatedUserProfile().then((data) => {
                 if(!data) return;
@@ -119,13 +119,7 @@ const App = () => {
 
     const getMoreNews = async (news, nextNewsUrl, isFetchingNews) => {
         if (nextNewsUrl && !isFetchingNews) {
-            await apiService.getNews({
-                limit: 16,
-                offset: nextNewsUrl.split('offset=')[1].split('&')[0],
-                summary: summaryFilter,
-                source: sourceFilter,
-                tags: tagsFilter
-            }).then((data) => {
+            await apiService.getNextNews(nextNewsUrl).then((data) => {
                 if (!data) return;
                 setNews([...news, ...data.results]);
                 setNextNewsUrl(data.next);

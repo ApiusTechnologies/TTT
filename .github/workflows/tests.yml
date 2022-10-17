@@ -20,7 +20,7 @@ jobs:
     - name: Make coverage report
       run: |
         docker-compose exec -T backend coverage xml -o /scripts/cobertura-coverage.backend.xml
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: cobertura-coverage.backend
         path: backend/scripts/cobertura-coverage.backend.xml
@@ -35,7 +35,7 @@ jobs:
         docker-compose up -d frontend
     - name: Test frontend
       run: docker-compose exec -T frontend npm run test -- --ci --coverage --coverageReporters cobertura
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: cobertura-coverage.frontend
         path: frontend/coverage/cobertura-coverage.xml
@@ -44,10 +44,10 @@ jobs:
     needs: [test-backend, test-frontend]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: cobertura-coverage.backend
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: cobertura-coverage.frontend
     - name: Code Coverage Report

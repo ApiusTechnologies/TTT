@@ -1,37 +1,35 @@
 import json
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet
 from .models import News, Tag, UserProfile, SavedSet
 from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer, SavedSetSerializer
 from .filters import NewsFilter, TagFilter
 from rest_framework.decorators import authentication_classes, permission_classes, action
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
-@authentication_classes([])
-@permission_classes([])
-class TagViewSet(viewsets.ModelViewSet):
+class TagViewSet(ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     filterset_class = TagFilter
 
 
-@authentication_classes([])
-@permission_classes([])
-class NewsViewSet(viewsets.ModelViewSet):
+class NewsViewSet(ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     filterset_class = NewsFilter
 
 
-@authentication_classes([])
-@permission_classes([])
-class SavedSetViewSet(viewsets.ModelViewSet):
+class SavedSetViewSet(ModelViewSet):
     queryset = SavedSet.objects.all()
     serializer_class = SavedSetSerializer
 
 
-class UserProfileViewSet(viewsets.ModelViewSet):
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+class UserProfileViewSet(ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 

@@ -3,13 +3,13 @@ from .models import Tag, News, UserProfile, SavedSet, Keyword
 
 
 class TagSerializer(serializers.ModelSerializer):
-    news_count = serializers.SerializerMethodField()
+    count = serializers.SerializerMethodField()
 
     class Meta:
         model = Tag
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'count')
 
-    def get_news_count(self, obj):
+    def get_count(self, obj):
         return obj.news.count()
 
 

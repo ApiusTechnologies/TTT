@@ -5,16 +5,18 @@ export class ApiService {
         this.requestAPI = new RequestAPI();
     }
 
-
     async getNews(queryParams) {
         return this.requestAPI.get('api/news/', { queryParams });
+    }
+
+    async getNextNews(nextNewsUrl) {
+        return this.requestAPI.get(nextNewsUrl);
     }
 
 
     async getTags(queryParams) {
         return this.requestAPI.get('api/tag/', { queryParams });
     }
-
 
     async getAuthenticatedUserProfile() {
         return this.requestAPI.get('api/userprofile/self/', {
@@ -34,6 +36,5 @@ export class ApiService {
             requiresAuthorization: true
         });
     }
-
 }
 export default ApiService;
