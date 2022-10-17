@@ -1,14 +1,24 @@
 from rest_framework import serializers
-from .models import Tag, News, TwitterAccount, UserProfile, SavedSet, Keyword
+from .models import Tag, News, UserProfile, SavedSet, Keyword
 
 
 class TagSerializer(serializers.ModelSerializer):
+    news_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Tag
         fields = ('id', 'name')
 
+    def get_news_count(self, obj):
+        return obj.news.count()
+
 
 class NewsSerializer(serializers.ModelSerializer):
+    source = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='name'
+    )
+
     class Meta:
         model = News
         fields = ('id', 'title', 'summary', 'source', 'href', 'tags', 'date')
@@ -21,11 +31,15 @@ class KeywordSerializer(serializers.ModelSerializer):
 
 
 class SavedSetSerializer(serializers.ModelSerializer):
-    keywords = serializers.StringRelatedField(many=True, read_only=True)
+    keywords = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='value'
+    )
 
     class Meta:
         model = SavedSet
-        fields = ('id', 'name', 'keywords',)
+        fields = ('id', 'name', 'keywords')
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -33,4 +47,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('savedsets', 'user', )
+        fields = ('id', 'savedsets', 'user')

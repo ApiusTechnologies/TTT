@@ -1,4 +1,5 @@
 import os
+import json
 import environ
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -35,36 +36,6 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 TWITTER_BEARER_TOKEN = env("TWITTER_BEARER_TOKEN")
 SECRET_KEY = env('SECRET_KEY')
 
-# Data sources
-TWITTER_SOURCE_LIST = [
-    {
-        "id": 951757923075674112,
-        "name": "@CERT_OPL"
-    },
-    {
-        "id": 1158139840866791424,
-        "name": "@vxunderground"
-    }
-]
-
-RSS_SOURCE_LIST = [
-    {
-        "url": "https://www.cert.pl/feed/",
-        "href_field": "link",
-        "date_field": "published_parsed",
-    },
-    {
-        "url": "http://feeds.feedburner.com/sekurak",
-        "href_field": "link",
-        "date_field": "published_parsed",
-    },
-    {
-        "url": "https://feeds.feedburner.com/niebezpiecznik/",
-        "href_field": "link",
-        "date_field": "updated",
-    }
-]
-
 #
 # Application definition
 #
@@ -90,6 +61,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework.authtoken',
     'rest_framework',
+    'polymorphic',
 ]
 
 REST_FRAMEWORK = {

@@ -1,34 +1,31 @@
 import feedparser
 import re
 import time
-from django.core.management.base import BaseCommand, CommandError
-from urllib.parse import urlparse
-from parsers.abstract_parser import AbstractParser
 from api.models import News, Tag
+from parsers.abstract_parser import AbstractParser
+from parsers.models import FeedburnerWebsite
 
 
 class FeedburnerRss(AbstractParser):
 
-    def __init__(self, sources):
-        self.sources = sources
+    def __init__(self, sources=None):
+        self.sources = sources or FeedburnerWebsite.objects.all()
 
     def handleAll(self):
         for source in self.sources:
-            self._handle(
-                source["url"],
-                source["href_field"],
-                source["date_field"]
-            )
+            self._handle(source)
 
-    def _handle(self, url, href_field, date_field):
+    def _handle(self, source):
+        url = source.url
+        date_field = source.date_field
+        href_field = source.href_field
+
         NewsFeed = feedparser.parse(url)
         entries = reversed(NewsFeed.entries)
         for entry in entries:
             date = entry[date_field]
             href = entry[href_field]
 
-            parsedDomain = urlparse(href)
-            source = parsedDomain.netloc.replace('www.', '')
             title = entry['title']
             summary = entry['summary']
 

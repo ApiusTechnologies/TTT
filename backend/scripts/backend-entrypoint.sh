@@ -13,5 +13,8 @@ printf "\nCreating superuser...\n"
 python manage.py createsuperuser --no-input \
     --username "$DJANGO_SUPERUSER_USER" --email "$DJANGO_SUPERUSER_EMAIL"
 
+printf "\nLoading initial sources...\n"
+python manage.py loaddata initial_sources
+
 printf "\nRunning development server...\n"
 python manage.py runserver 0.0.0.0:8000

@@ -42,9 +42,6 @@ services:
     image: rabbitmq:3.8.9-management-alpine
     env_file:
       - .env
-    ports:
-      - 5672:5672
-      - 15672:15672
 
   flower:
     image: mher/flower:0.9.5

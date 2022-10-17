@@ -239,6 +239,17 @@ python-versions = ">=3.7"
 Django = ">=3.2"
 
 [[package]]
+name = "django-polymorphic"
+version = "3.1.0"
+description = "Seamless polymorphic inheritance for Django models"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=2.1"
+
+[[package]]
 name = "djangorestframework"
 version = "3.14.0"
 description = "Web APIs for Django, made easy."
@@ -491,7 +502,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "852e3a81ef3005c2df70c8ded1f2a57243521e5f2dad1e3d654e41afb9a60d48"
+content-hash = "c25204d8229889f76f803f6f89c6d6c8213b4e292bc7835462767c8082b4f4f2"
 
 [metadata.files]
 amqp = []
@@ -512,6 +523,7 @@ django = []
 django-cors-headers = []
 django-environ = []
 django-filter = []
+django-polymorphic = []
 djangorestframework = []
 feedparser = []
 idna = []
