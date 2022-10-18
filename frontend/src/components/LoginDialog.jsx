@@ -191,7 +191,6 @@ const LoginDialog = () => {
                         onKeyDown={(event) => handleSubmitOnEnter(event)}
                     />
                     <TextField style={{ display: isRegisterForm ? 'block' : 'none' }}
-                        autoFocus
                         margin="dense"
                         id="name"
                         label="Email"
@@ -204,7 +203,6 @@ const LoginDialog = () => {
                         onKeyDown={(event) => handleSubmitOnEnter(event)}
                     />
                     <TextField
-                        autoFocus
                         margin="dense"
                         id="name"
                         label="Password"
@@ -217,7 +215,6 @@ const LoginDialog = () => {
                         onKeyDown={(event) => handleSubmitOnEnter(event)}
                     />
                     <TextField style={{ display: isRegisterForm ? 'block' : 'none' }}
-                        autoFocus
                         margin="dense"
                         id="name"
                         label="Repeat Password"

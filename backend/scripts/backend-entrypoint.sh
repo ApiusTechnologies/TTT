@@ -16,5 +16,12 @@ python manage.py createsuperuser --no-input \
 printf "\nLoading initial sources...\n"
 python manage.py loaddata initial_sources
 
-printf "\nRunning development server...\n"
-python manage.py runserver 0.0.0.0:8000
+if [ $1 = "prod" ]
+then
+    gunicorn config.asgi:application \
+        -k uvicorn.workers.UvicornWorker \
+        --bind 0.0.0.0:8000 \
+        --chdir=/app
+else
+    python manage.py runserver 0.0.0.0:8000
+fi
