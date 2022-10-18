@@ -53,6 +53,9 @@ export class RequestAPI {
 
         if (requiresAuthorization === true) {
             const token = this.cookies.get('token');
+            if (!token) {
+                return Promise.resolve();
+            }
             config.headers.Authorization = token && 'Token ' + token;
         }
 
@@ -68,7 +71,7 @@ export class RequestAPI {
         });
     }
 
-    async get(path, options) {
+    async get(path, options={}) {
         if(Object.prototype.hasOwnProperty.call(options, 'body')) {
             throw new Error('GET requests cannot have body parameter.');
         }

@@ -35,9 +35,13 @@ const SideDrawer = (props) => {
                         <ListItemButton selected={!props.tagsFilter} onClick={() => props.handleTagOnClick('')}>
                             <ListItemText primary={'All'} />
                         </ListItemButton>
-                        {props.tags?.map(({ _, name }, index) => (
-                            <ListItemButton key={index} selected={props.tagsFilter === name} onClick={() => props.handleTagOnClick(name)}>
-                                <ListItemText primary={name} />
+                        {props.tags?.map(({ _, name, count }, index) => (
+                            <ListItemButton key={index} selected={props.tagsFilter === name} onClick={() => props.handleTagOnClick(name)} >
+                                <ListItemText primary={name} secondary={`(${count})`} sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between'
+                                }} />
                             </ListItemButton>
                         ))}
                     </List>}
