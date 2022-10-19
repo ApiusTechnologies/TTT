@@ -3,25 +3,24 @@ version: "3.3"
 services:
 
   frontend:
-    restart: always
-    build: 
-      context: ./frontend
-      dockerfile: ./Dockerfile.prod
-    volumes:
-      - backendstaticdata:/usr/share/nginx/html/backendstaticdata
+    build: ./frontend
     ports:
-      - 8080:8080
+      - 3000:3000
     environment:
       - REACT_APP_URL=localhost
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
 
   backend:
-    restart: always
     build: backend
     env_file:
       - .env
-    entrypoint: /scripts/backend-entrypoint.sh prod
     volumes:
-      - backendstaticdata:/static
+      - ./backend/src:/app
+      - ./backend/scripts:/scripts
+    entrypoint: /scripts/backend-entrypoint.sh
     ports:
       - 8000:8000
     depends_on:
@@ -59,4 +58,3 @@ services:
 
 volumes:
   pgdata:
-  backendstaticdata:

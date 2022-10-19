@@ -150,6 +150,5 @@ USE_TZ = True
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-STATIC_URL = '/static/'
-
-STATIC_ROOT = '/static'
+STATIC_URL = '/static/' if DEBUG else '/backendstaticdata/'
+STATIC_ROOT = '/static/'

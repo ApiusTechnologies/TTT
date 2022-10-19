@@ -27,3 +27,5 @@ RUN apt-get update -y \
     && rm -r /var/lib/apt/lists/*
 
 COPY --from=builder /root/.local /root/.local
+COPY ./scripts /scripts
+COPY ./src .

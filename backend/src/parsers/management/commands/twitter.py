@@ -1,10 +1,9 @@
 from django.core.management.base import BaseCommand
-from parsers.twitter_parser import TwitterParser
+from parsers.tasks import handleTwitter
 
 
 class Command(BaseCommand):
     help = 'Scraps Twitter for tweets'
 
     def handle(self, *args, **options):
-        parser = TwitterParser()
-        parser.handleAll()
+        handleTwitter()

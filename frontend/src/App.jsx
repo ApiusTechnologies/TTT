@@ -88,7 +88,7 @@ const App = () => {
         setIsFetchingTags(true);
         await apiService.getTags({ name: event.target.value }).then((data) => {
             if (!data) return;
-            setTags(data || []);
+            setTags(data.sort((a, b) => b.count - a.count) || []);
         }).catch(error => {
             setIsFetchingTagsError(error);
         }).finally(() => {

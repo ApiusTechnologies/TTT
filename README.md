@@ -14,7 +14,7 @@
 
 ## Live demo
 
-(coming soon...)
+If you want to see how it works, [check this out](https://threattrendstracker.tk/)! (if it doesn't work, server is overloaded)
 
 ## Feedback
 

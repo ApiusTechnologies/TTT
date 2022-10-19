@@ -36,7 +36,7 @@ class NewsFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(
         field_name='title', lookup_expr="icontains")
     source = django_filters.CharFilter(
-        field_name='source', lookup_expr="icontains")
+        field_name='source__name', lookup_expr="icontains")
     summary = ListFilterField(field_name='summary')
 
     class Meta:

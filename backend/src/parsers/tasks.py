@@ -6,19 +6,19 @@ from parsers.twitter_parser import TwitterParser
 
 @app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
-    rss_frequency = 5 * 60.0        # 5 minutes
-    sender.add_periodic_task(rss_frequency, parseRSS.s())
+    feedburner_frequency = 5 * 60.0        # 5 minutes
+    sender.add_periodic_task(feedburner_frequency, handleFeedburner.s())
     twitter_frequency = 5 * 60.0    # 5 minutes
-    sender.add_periodic_task(twitter_frequency, scrapTweets.s())
+    sender.add_periodic_task(twitter_frequency, handleTwitter.s())
 
 
 @app.task
-def parseRSS(**kwargs):
-    parser = FeedburnerRss(settings.RSS_SOURCE_LIST)
+def handleFeedburner(**kwargs):
+    parser = FeedburnerRss()
     parser.handleAll()
 
 
 @app.task
-def scrapTweets(**kwargs):
-    parser = TwitterParser(settings.TWITTER_SOURCE_LIST)
+def handleTwitter(**kwargs):
+    parser = TwitterParser()
     parser.handleAll()
