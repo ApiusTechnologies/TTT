@@ -17,6 +17,9 @@ services:
     build: backend
     env_file:
       - .env
+    volumes:
+      - ./backend/src:/app
+      - ./backend/scripts:/scripts
     entrypoint: /scripts/backend-entrypoint.sh
     ports:
       - 8000:8000
