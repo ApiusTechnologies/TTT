@@ -1,7 +1,7 @@
 import json
 from rest_framework.viewsets import ModelViewSet
-from .models import News, Tag, UserProfile, SavedSet
-from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer, SavedSetSerializer
+from .models import News, Tag, UserProfile, Preset
+from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer, PresetSerializer
 from .filters import NewsFilter, TagFilter
 from rest_framework.decorators import authentication_classes, permission_classes, action
 from django.shortcuts import get_object_or_404
@@ -22,9 +22,9 @@ class NewsViewSet(ModelViewSet):
     filterset_class = NewsFilter
 
 
-class SavedSetViewSet(ModelViewSet):
-    queryset = SavedSet.objects.all()
-    serializer_class = SavedSetSerializer
+class PresetViewSet(ModelViewSet):
+    queryset = Preset.objects.all()
+    serializer_class = PresetSerializer
 
 
 @permission_classes([IsAuthenticated])
@@ -48,9 +48,13 @@ class UserProfileViewSet(ModelViewSet):
     def patch_self(self, request):
         profile = get_object_or_404(self.queryset, user=request.user.id)
         body = json.loads(request.body)
-        savedsets_ids = body['savedsets']
-        savedsets = [get_object_or_404(SavedSet, id=savedset_id)
-                     for savedset_id in savedsets_ids]
-        profile.savedsets.set(savedsets)
+        if 'presets' in body:
+            presets_ids = body['presets']
+            presets = [get_object_or_404(Preset, id=preset_id)
+                       for preset_id in presets_ids]
+            profile.presets.set(presets)
+        if 'read_news' in body:
+            read_news_ids = body['read_news']
+            profile.read_news.add(*read_news_ids)
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data)

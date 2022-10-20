@@ -7,6 +7,8 @@ env = environ.Env(
     # DJANGO CONFIG
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1', '[::1]']),
+    CSRF_TRUSTED_ORIGINS=(
+        list, ['https://*.threattrendstracker.tk', 'https://*.127.0.0.1']),
     SECRET_KEY=(str),
 
     # DATA SOURCES
@@ -149,6 +151,7 @@ USE_L10N = True
 USE_TZ = True
 
 CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS')
 
 STATIC_URL = '/static/' if DEBUG else '/backendstaticdata/'
 STATIC_ROOT = '/static/'

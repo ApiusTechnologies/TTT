@@ -73,7 +73,10 @@ const Navbar = (props) => {
                     </Typography></Box>
                 <Box sx={{ display: 'flex', marginRight: '16px', gap: '16px' }}>
                     <PresetDialog setSelectedPresets={props.setSelectedPresets} />
-                    <LoginDialog />
+                    <LoginDialog
+                        isLoggedIn={props.isLoggedIn}
+                        setIsLoggedIn={props.setIsLoggedIn}
+                        patchProfileReadNews={props.patchProfileReadNews} />
                 </Box>
             </Toolbar>
         </AppBar>

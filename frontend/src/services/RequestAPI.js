@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Cookies from 'universal-cookie';
+import CookieService from './CookieService';
 
 export class RequestAPI {
 
@@ -9,7 +9,7 @@ export class RequestAPI {
         } else {
             this.host = '';
         }
-        this.cookies = new Cookies();
+        this.cookieService = new CookieService();
     }
 
     getEndpoint(path) {
@@ -52,7 +52,7 @@ export class RequestAPI {
         const config = { headers };
 
         if (requiresAuthorization === true) {
-            const token = this.cookies.get('token');
+            const token = this.cookieService.getToken();
             if (!token) {
                 return Promise.resolve();
             }
