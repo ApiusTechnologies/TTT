@@ -10,14 +10,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import ApiService from '../services/ApiService';
-import Cookies from 'universal-cookie';
 import { Typography } from '@mui/material';
+import CookieService from '../services/CookieService';
 
 const PresetDialog = (props) => {
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
     const [presets, setPresets] = React.useState([]);
 
-    const cookies = new Cookies();
+    const cookieService = new CookieService();
     const apiService = new ApiService();
 
     React.useEffect(() => {
@@ -46,9 +46,9 @@ const PresetDialog = (props) => {
     };
 
     const handleSubmit = async () => {
-        const token = cookies.get('token');
+        const token = cookieService.getToken();
         const selectedPresets = presets.filter((preset) => Boolean(preset.selected));
-        if (!token || token === 'undefined') {
+        if (!token) {
             props.setSelectedPresets(selectedPresets);
         } else {
             await apiService.patchAuthenticatedUserProfile(

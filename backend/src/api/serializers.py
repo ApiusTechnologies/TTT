@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tag, News, UserProfile, SavedSet, Keyword
+from .models import Tag, News, UserProfile, Preset, Keyword
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -30,7 +30,7 @@ class KeywordSerializer(serializers.ModelSerializer):
         fields = ('id', 'value')
 
 
-class SavedSetSerializer(serializers.ModelSerializer):
+class PresetSerializer(serializers.ModelSerializer):
     keywords = serializers.SlugRelatedField(
         many=True,
         read_only=True,
@@ -38,13 +38,14 @@ class SavedSetSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = SavedSet
+        model = Preset
         fields = ('id', 'name', 'keywords')
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    savedsets = SavedSetSerializer(many=True, read_only=True)
+    presets = PresetSerializer(many=True, read_only=True)
+    read_news = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'savedsets', 'user')
+        fields = ('id', 'presets', 'user', 'read_news')

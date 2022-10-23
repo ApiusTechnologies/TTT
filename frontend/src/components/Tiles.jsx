@@ -8,7 +8,8 @@ import { Container } from '@mui/system';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import GppGoodIcon from '@mui/icons-material/GppGood';
 import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
-const Tiles = (props) =>  {
+
+const Tiles = (props) => {
     return (
         <>
             <Toolbar />
@@ -26,7 +27,7 @@ const Tiles = (props) =>  {
                 )}
                 {props.news?.map((element, index) => (
                     <Grid key={index} item xs={12} md={3}>
-                        <Tile news={element} />
+                        <Tile news={element} handleClick={() => props.handleReadMoreClick(element.id)} wasRead={props.readNews?.has(element.id.toString())} />
                     </Grid>  
                 ))}
                 {props.isFetchingNews && <Container sx={{display: 'flex', justifyContent: 'center', marginTop: '48px'}}>

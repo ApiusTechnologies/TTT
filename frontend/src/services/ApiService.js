@@ -24,15 +24,15 @@ export class ApiService {
         });
     }
 
-    async patchAuthenticatedUserProfile(savedsets) {
+    async patchAuthenticatedUserProfile(presets, readNews) {
         return this.requestAPI.patch('api/userprofile/self/', {
-            body: { savedsets },
+            body: { presets, read_news: readNews },
             requiresAuthorization: true
         });
     }
 
     async getPresets() {
-        return this.requestAPI.get('api/savedset/', { 
+        return this.requestAPI.get('api/presets/', { 
             requiresAuthorization: true
         });
     }
