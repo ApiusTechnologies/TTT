@@ -55,7 +55,11 @@ class TwitterParser(AbstractParser):
             news, news_created = News.objects.get_or_create(
                 title=title, summary=summary, source=source, href=href, date=tweet.created_at)
             if (news_created):
-                tagOrange, _ = Tag.objects.get_or_create(name=name)
+                hashtags = re.findall(r'(\#.+?)\b',summary)
+                for ht in hashtags:
+                    tag, _ = Tag.objects.get_or_create(name=ht)
+                    news.tags.add(tag)
+                tagSourceName, _ = Tag.objects.get_or_create(name=name)
                 tagTwitter, _ = Tag.objects.get_or_create(name='Twitter')
-                news.tags.add(tagOrange)
+                news.tags.add(tagSourceName)
                 news.tags.add(tagTwitter)
