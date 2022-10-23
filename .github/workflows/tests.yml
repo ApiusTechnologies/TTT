@@ -34,7 +34,7 @@ jobs:
         mv .env.example .env
         docker-compose -f docker-compose.dev.yaml up -d frontend
     - name: Test frontend
-      run: docker-compose exec -T frontend npm run test -- --ci --coverage --coverageReporters cobertura
+      run: docker-compose exec -T --user root frontend npm run test -- --ci --coverage --coverageReporters cobertura
     - uses: actions/upload-artifact@v3
       with:
         name: cobertura-coverage.frontend

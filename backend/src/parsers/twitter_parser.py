@@ -1,5 +1,6 @@
 import logging
 import tweepy
+import re
 from api.models import News, Tag
 from datetime import datetime, timedelta
 from django.conf import settings
@@ -55,7 +56,7 @@ class TwitterParser(AbstractParser):
             news, news_created = News.objects.get_or_create(
                 title=title, summary=summary, source=source, href=href, date=tweet.created_at)
             if (news_created):
-                hashtags = re.findall(r'(\#.+?)\b',summary)
+                hashtags = re.findall(r'(\#.+?)\b', summary)
                 for ht in hashtags:
                     tag, _ = Tag.objects.get_or_create(name=ht)
                     news.tags.add(tag)
