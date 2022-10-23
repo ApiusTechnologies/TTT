@@ -8,11 +8,15 @@ import Searchbar from './components/Searchbar';
 import SideDrawer from './components/SideDrawer';
 import { theme } from './theme';
 import ApiService from './services/ApiService';
+import CookieService from './services/CookieService';
+import LocalStorageService from './services/LocalStorageService';
 
 const drawerWidth = 240;
 
 const App = () => {
     const apiService = new ApiService();
+    const cookieService = new CookieService();
+    const localStorageService = new LocalStorageService();
 
     const [mobileDrawerOpen, setMobileDrawerOpen] = React.useState(false);
 
@@ -31,6 +35,16 @@ const App = () => {
 
     const [selectedPresets, setSelectedPresets] = React.useState([]);
 
+    const getReadNewsFromLocalStorage = () => {
+        const localStorageReadNews = localStorageService.getReadNews();
+        return localStorageReadNews ?
+            new Set(localStorageReadNews.split(',')) :
+            new Set();
+    };
+    const [readNews, setReadNews] = React.useState(getReadNewsFromLocalStorage());
+
+    const [isLoggedIn, setIsLoggedIn] = React.useState(Boolean(cookieService.getToken()));
+
     React.useEffect(() => {
         const fetchData = async () => {
             await apiService.getNews({ limit: 16 }).then((data) => {
@@ -44,11 +58,39 @@ const App = () => {
             });
             await apiService.getAuthenticatedUserProfile().then((data) => {
                 if(!data) return;
-                setSelectedPresets(data.savedsets);
+                setSelectedPresets(data.presets);
+                const readNews = new Set([...data.read_news.map(id => id.toString())]);
+                localStorageService.setReadNews([...readNews].join(','));
+                setReadNews(readNews);
             });
         };
         fetchData();
     }, []);
+
+    React.useEffect(() => {
+        const fetchUserProfile = async () => {
+            await apiService.getAuthenticatedUserProfile().then((data) => {
+                if (!data) return;
+                setSelectedPresets(data.presets);
+                const readNews = new Set([...data.read_news.map(id => id.toString())]);
+                localStorageService.setReadNews([...readNews].join(','));
+                setReadNews(readNews);
+            });
+        };
+        fetchUserProfile();
+        if (isLoggedIn === false) {
+            setReadNews(getReadNewsFromLocalStorage());
+        }
+    }, [isLoggedIn]);
+
+    React.useEffect(() => {
+        const listener = () => handleScroll(news, nextNewsUrl, isFetchingNews);
+        window.addEventListener('scroll', listener);
+
+        return () => {
+            window.removeEventListener('scroll', listener);
+        };
+    }, [news, nextNewsUrl, isFetchingNews]);
 
     React.useEffect(() => {
         const fetchFilteredNews = async () => {
@@ -144,14 +186,20 @@ const App = () => {
         }
     };
 
-    React.useEffect(() => {
-        const listener = () => handleScroll(news, nextNewsUrl, isFetchingNews);
-        window.addEventListener('scroll', listener);
-  
-        return () => {
-            window.removeEventListener('scroll', listener);
-        };
-    }, [news, nextNewsUrl, isFetchingNews]);
+    const patchProfileReadNews = async (readNews) => {
+        await apiService.patchAuthenticatedUserProfile(undefined, [...readNews]);
+    };
+
+    const handleReadMoreClick = (id) => {
+        setReadNews(prevSet => new Set([...prevSet, id.toString()]));
+        const localStorageReadNews = localStorageService.getReadNews();
+        if (localStorageReadNews) {
+            localStorageService.setReadNews(`${localStorageReadNews},${id.toString()}`);
+        } else {
+            localStorageService.setReadNews(id.toString());
+        }
+        patchProfileReadNews(new Set([...readNews, id.toString()]));
+    };
 
     return (
         <ThemeProvider theme={theme}>
@@ -161,6 +209,9 @@ const App = () => {
                     drawerWidth={drawerWidth}
                     handleDrawerToggle={handleDrawerToggle}
                     setSelectedPresets={(presets) => setSelectedPresets(presets)}
+                    patchProfileReadNews={patchProfileReadNews}
+                    isLoggedIn={isLoggedIn}
+                    setIsLoggedIn={setIsLoggedIn}
                 />
                 <SideDrawer 
                     drawerWidth={drawerWidth}
@@ -186,6 +237,10 @@ const App = () => {
                         nextNewsUrl={nextNewsUrl}
                         isFetchingNews={isFetchingNews}
                         isFetchingNewsError={isFetchingNewsError}
+                        patchProfileReadNews={patchProfileReadNews}
+                        readNews={readNews}
+                        isLoggedIn={isLoggedIn}
+                        handleReadMoreClick={handleReadMoreClick}
                     />
                 </Box>
             </Box>

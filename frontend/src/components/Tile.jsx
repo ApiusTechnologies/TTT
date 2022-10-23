@@ -8,14 +8,15 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import {decodeHtmlCharCodes} from '../common/utils';
 
-const Tile = (props) =>  {
-    return (
+const Tile = (props) => {
+    return ( 
         <Grow in={true} timeout={1500} >
             <Card variant="outlined" sx={{
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                backgroundColor: props.wasRead ? '#D1D1D1 ' : 'white',
             }}>
                 <CardContent sx={{textAlign: 'center'}}>
                     <Box sx={{
@@ -43,9 +44,14 @@ const Tile = (props) =>  {
                     </Box>
                 </CardContent>
                 <CardActions>
-                    <Button rel="noopener noreferrer" target="_blank" href={props.news.href} size="small">
+                    <Button onClick={props.handleClick} rel="noopener noreferrer" target="_blank" href={props.news.href} size="small">
               LEARN MORE
                     </Button>
+                    <Typography sx={{marginLeft: 'auto', marginRight: 2}}
+                        variant="h8"
+                        color="textSecondary">
+                        {props.news.date.replace('T', ' ').replace('Z','')}
+                    </Typography>
                 </CardActions>
             </Card>
         </Grow>

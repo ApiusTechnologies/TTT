@@ -2,6 +2,7 @@ import {render} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from '../App';
 import RequestAPI from "../services/RequestAPI"
+import { act } from 'react-dom/test-utils';
 
 describe("Generic test", () => {
     beforeAll(() => {
@@ -13,6 +14,6 @@ describe("Generic test", () => {
     });
 
     test('Loads with no errors', async () => {
-        render(<App />);
+        await act(async () => render(<App />));
     });
 });

@@ -8,13 +8,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Cookies from 'universal-cookie';
 import Typography from '@mui/material/Typography';
 
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { Container } from '@mui/material';
 import { emailValidator, password2Validator, passwordValidator } from '../common/validators';
+import CookieService from '../services/CookieService';
+import LocalStorageService from '../services/LocalStorageService';
 
 const Alerts = {
     LogoutSuccess: 'LogoutSuccess',
@@ -25,7 +26,11 @@ const Alerts = {
     None: 'none',
 };
 
-const LoginDialog = () => {
+const LoginDialog = (props) => {
+    const authService = new AuthService();
+    const cookieService = new CookieService();
+    const localStorageService = new LocalStorageService();
+
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [alertOpen, setAlertOpen] = React.useState(false);
     const [alertStatus, setAlertStatus] = React.useState(Alerts.None);
@@ -41,11 +46,6 @@ const LoginDialog = () => {
 
     const [emailInput, setEmailInput] = React.useState('');
     const [isEmailInputError, setIsEmailInputError] = React.useState(false);
-
-    const authService = new AuthService();
-    const cookies = new Cookies();
-
-    const [isLoggedIn, setIsLoggedIn] = React.useState(cookies.get('token') && cookies.get('token') !== 'undefined');
 
     const validateInputs = (emailInput, passwordInput, password2Input) => {
         const isEmailError = emailValidator(emailInput);
@@ -70,9 +70,10 @@ const LoginDialog = () => {
     };
     
     const handleOpenDialog = () => {
-        if (isLoggedIn) {
-            cookies.remove('token');
-            setIsLoggedIn(false);
+        if (props.isLoggedIn) {
+            cookieService.removeToken();
+            localStorageService.removeReadNews();
+            props.setIsLoggedIn(false);
             setAlertStatus(Alerts.LogoutSuccess);
             openAlert();
         } else {
@@ -89,12 +90,16 @@ const LoginDialog = () => {
         await authService.getToken(userInput, passwordInput)
             .then((data) => {
                 if (!data) throw new Error();
-                cookies.set('token', data.token, { httpOnly: false });
+                cookieService.setToken(data.token);
                 setAlertStatus(Alerts.LoginSuccess);
                 openAlert();
-                setIsLoggedIn(true);
+                props.setIsLoggedIn(true);
+                const readNews = localStorageService.getReadNews();
+                if (readNews) {
+                    props.patchProfileReadNews(readNews.split(','));
+                }
             }).catch(() => {
-                setIsLoggedIn(false);
+                props.setIsLoggedIn(false);
                 setAlertStatus(Alerts.LoginError);
                 openAlert();
             });
@@ -113,7 +118,7 @@ const LoginDialog = () => {
             emailInput
         ).then((data) => {
             if (!data) throw new Error();
-            cookies.set('token', data.token, { httpOnly: false });
+            cookieService.setToken(data.token);
             setAlertStatus(Alerts.RegisterSuccess);
             openAlert();
         }).catch(() => {
@@ -170,7 +175,7 @@ const LoginDialog = () => {
                 color: 'primary.contrastText'
             }}>
                 <Typography variant="h5">
-                    {isLoggedIn ? 'Logout' : 'Login'}
+                    {props.isLoggedIn ? 'Logout' : 'Login'}
                 </Typography>
             </Button>
             <Dialog open={dialogOpen} onClose={handleCloseDialog}>

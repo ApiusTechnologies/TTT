@@ -34,7 +34,7 @@ class Keyword(models.Model):
         return f'{self.value}'
 
 
-class SavedSet(models.Model):
+class Preset(models.Model):
     name = models.CharField(name='name', null=True, max_length=256)
     keywords = models.ManyToManyField(Keyword)
 
@@ -44,7 +44,8 @@ class SavedSet(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    savedsets = models.ManyToManyField(SavedSet, blank=True)
+    presets = models.ManyToManyField(Preset, blank=True)
+    read_news = models.ManyToManyField(News, blank=True)
 
     def __str__(self):
         return self.user.username
