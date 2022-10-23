@@ -39,8 +39,6 @@ services:
     image: mher/flower:0.9.5
     env_file:
       - .env
-    ports:
-      - 5555:5555
     depends_on:
       - rabbit
 
