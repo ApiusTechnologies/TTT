@@ -15,9 +15,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import InboxIcon from '@mui/icons-material/Inbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import ApiService from '../services/ApiService';
+import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -60,36 +59,31 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const CustomPresets = (props) => {
     const [open, setOpen] = React.useState(false);
-    // const [presets, setPresets] = React.useState([]);
-    const [clickedPreset, setClickedPreset] = React.useState(false);
-
-
-    // const apiService = new ApiService();
-    // React.useEffect(() => {
-    //     const fetchData = async () => {
-    //         await apiService.getPresets()
-    //             .then((data) => {
-    //                 if (!data) return;
-    //                 setPresets(data.map(preset => ({...preset, selected: false})));
-    //             });
-    //     };
-    //     fetchData();
-    // }, []);
+    const [clickedPresetQuery, setClickedPresetQuery] = React.useState('');
 
     const handleClickOpen = () => {
         setOpen(true);
-        console.log(props.customPresets)
     };
     const handleClose = () => {
         setOpen(false);
     };
-    const handlePresetClick = (event) => {
-      console.log(event)
+    const customPresetsQueryByIndex = (index) => {
+      var idx = props.customPresets.map(object => object.id).indexOf(index);
+      return props.customPresets[idx].query
     };
+    const handlePresetClick = (event) => {
+      setClickedPresetQuery(customPresetsQueryByIndex(event))
+    };
+    
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                Custom Presets
+            <Button variant="outlined" onClick={handleClickOpen} sx={{
+                color: 'primary.contrastText'
+            }}>
+                <Typography variant="h5">
+                  Custom Presets
+                </Typography>
+
             </Button>
             <BootstrapDialog 
                 onClose={handleClose}
@@ -97,18 +91,20 @@ const CustomPresets = (props) => {
                 open={open}
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                Custom Presets
+                  <Typography variant="h5">
+                    Custom Presets
+                  </Typography>
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
-                <div style={{display: "flex"}} >
-                <Box sx={{ width: '60%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                <div  >
+                <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                     
                     <nav aria-label="secondary mailbox folders">
                         <List>
                         {props.customPresets.map((element) => (
                             <>
                             <ListItem key={element.name} disablePadding>
-                                <ListItemButton onClick={handlePresetClick(element.name)}>
+                                <ListItemButton onClick={() => handlePresetClick(element.id)}>
                                     <ListItemText primary={element.name}/>
                                 </ListItemButton>
                             </ListItem>
@@ -119,12 +115,21 @@ const CustomPresets = (props) => {
                         </List>
                     </nav>
                 </Box>
-                <div style={{width: "300px"}}>
-                    DUPA
+                <div style={{width: "100%", paddingTop: "15px"}}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Query"
+                      multiline
+                      rows={4}
+                      defaultValue={clickedPresetQuery}
+                    />
                 </div>
                 </div>
                 </DialogContent>
                 <DialogActions>
+                <Button autoFocus onClick={handleClose}>
+                    Create
+                </Button>
                 <Button autoFocus onClick={handleClose}>
                     Save changes
                 </Button>
