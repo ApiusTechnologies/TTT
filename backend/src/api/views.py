@@ -1,7 +1,7 @@
 import json
 from rest_framework.viewsets import ModelViewSet
-from .models import News, Tag, UserProfile, Preset
-from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer, PresetSerializer
+from .models import News, Tag, UserProfile, Preset, CustomPreset
+from .serializers import NewsSerializer, TagSerializer, UserProfileSerializer, PresetSerializer, CustomPresetSerializer
 from .filters import NewsFilter, TagFilter
 from rest_framework.decorators import authentication_classes, permission_classes, action
 from django.shortcuts import get_object_or_404
@@ -26,6 +26,9 @@ class PresetViewSet(ModelViewSet):
     queryset = Preset.objects.all()
     serializer_class = PresetSerializer
 
+class CustomPresetViewSet(ModelViewSet):
+    queryset = CustomPreset.objects.all()
+    serializer_class = CustomPresetSerializer
 
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])

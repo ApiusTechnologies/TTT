@@ -34,6 +34,8 @@ const App = () => {
     const [sourceFilter, setSourceFilter] = React.useState('');
 
     const [selectedPresets, setSelectedPresets] = React.useState([]);
+    const [customPresets, setCustomPresets] = React.useState([]);
+    
 
     const getReadNewsFromLocalStorage = () => {
         const localStorageReadNews = localStorageService.getReadNews();
@@ -59,6 +61,8 @@ const App = () => {
             await apiService.getAuthenticatedUserProfile().then((data) => {
                 if(!data) return;
                 setSelectedPresets(data.presets);
+                setCustomPresets(data.custom_presets);
+                console.log(data)
                 const readNews = new Set([...data.read_news.map(id => id.toString())]);
                 localStorageService.setReadNews([...readNews].join(','));
                 setReadNews(readNews);
@@ -72,6 +76,7 @@ const App = () => {
             await apiService.getAuthenticatedUserProfile().then((data) => {
                 if (!data) return;
                 setSelectedPresets(data.presets);
+                setCustomPresets(data.custom_presets);
                 const readNews = new Set([...data.read_news.map(id => id.toString())]);
                 localStorageService.setReadNews([...readNews].join(','));
                 setReadNews(readNews);
@@ -209,9 +214,11 @@ const App = () => {
                     drawerWidth={drawerWidth}
                     handleDrawerToggle={handleDrawerToggle}
                     setSelectedPresets={(presets) => setSelectedPresets(presets)}
+                    setCustomPresets={(presets) => setCustomPresets(presets)}
                     patchProfileReadNews={patchProfileReadNews}
                     isLoggedIn={isLoggedIn}
                     setIsLoggedIn={setIsLoggedIn}
+                    customPresets = {customPresets}
                 />
                 <SideDrawer 
                     drawerWidth={drawerWidth}

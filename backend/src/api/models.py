@@ -41,7 +41,6 @@ class Preset(models.Model):
     def __str__(self):
         return f'{self.name}'
 
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     presets = models.ManyToManyField(Preset, blank=True)
@@ -52,3 +51,11 @@ class UserProfile(models.Model):
 
     def save(self, *args, **kwargs):
         super(UserProfile, self).save(*args, **kwargs)
+
+class CustomPreset(models.Model):
+    name = models.CharField(name='name', null=True, max_length=256)
+    query = models.CharField(name='query', null=True, max_length=256)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name}'
