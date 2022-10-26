@@ -21,10 +21,14 @@ env = environ.Env(
     POSTGRES_HOST=(str, 'postgres'),
     POSTGRES_PORT=(str, '5432'),
 
-    # CELERY
+    # RABBITMQ
     RABBITMQ_DEFAULT_USER=(str, 'admin'),
     RABBITMQ_DEFAULT_PASS=(str, 'pass'),
     RABBITMQ_URL=(str, 'rabbit:5672'),
+
+    # REDIS
+    REDIS_URL=(str, 'redis'),
+    REDIS_PORT=(str, '6379'),
 )
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -51,7 +55,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.sessions',
-    'django.contrib.staticfiles',
+
+    # External
+    'corsheaders',
+    'daphne',
+    'django_filters',
+    'rest_framework.authtoken',
+    'rest_framework',
+    'polymorphic',
 
     # Internal
     'api.apps.ApiConfig',
@@ -59,12 +70,8 @@ INSTALLED_APPS = [
     'parsers.apps.ParsersConfig',
     'utils.apps.UtilsConfig',
 
-    # External
-    'corsheaders',
-    'django_filters',
-    'rest_framework.authtoken',
-    'rest_framework',
-    'polymorphic',
+    # Static files
+    'django.contrib.staticfiles',
 ]
 
 REST_FRAMEWORK = {
@@ -100,18 +107,32 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'WARNING',
     },
+    'daphne': {
+        'handlers': [
+            'console',
+        ],
+        'level': 'DEBUG'
+    },
 }
 
 ROOT_URLCONF = 'config.urls'
 
-ASGI_APPLICATION = 'config.asgi.application'
+ASGI_APPLICATION = 'config.asgi.http_application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [(env('REDIS_HOST'), env('REDIS_PORT'))],
+        },
+    },
+}
 
 RABBITMQ_USER = env('RABBITMQ_DEFAULT_USER')
 RABBITMQ_PASS = env('RABBITMQ_DEFAULT_PASS')
 RABBITMQ_URL = env('RABBITMQ_URL')
 
 CELERY_BROKER_URL = f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_URL}//'
-
 
 DATABASES = {
     'default': {

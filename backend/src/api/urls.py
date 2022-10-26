@@ -1,5 +1,5 @@
-from .views import NewsViewSet, TagViewSet, UserProfileViewSet, PresetViewSet
 from rest_framework.routers import DefaultRouter
+from .views import NewsViewSet, TagViewSet, UserProfileViewSet, PresetViewSet
 
 router = DefaultRouter()
 router.register(r'news', NewsViewSet, basename='news')

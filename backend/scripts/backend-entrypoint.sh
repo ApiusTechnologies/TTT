@@ -18,7 +18,7 @@ python manage.py loaddata initial_sources
 
 if [ $1 = "prod" ]
 then
-    gunicorn config.asgi:application \
+    gunicorn config.asgi:http_application \
         -k uvicorn.workers.UvicornWorker \
         --bind 0.0.0.0:8000 \
         --chdir=/app
