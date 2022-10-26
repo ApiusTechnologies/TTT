@@ -60,28 +60,32 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const CustomPresets = (props) => {
     const [open, setOpen] = React.useState(false);
-    const [presets, setPresets] = React.useState([]);
+    // const [presets, setPresets] = React.useState([]);
+    const [clickedPreset, setClickedPreset] = React.useState(false);
 
-    const apiService = new ApiService();
-    React.useEffect(() => {
-        const fetchData = async () => {
-            await apiService.getPresets()
-                .then((data) => {
-                    if (!data) return;
-                    setPresets(data.map(preset => ({...preset, selected: false})));
-                });
-        };
-        fetchData();
-    }, []);
+
+    // const apiService = new ApiService();
+    // React.useEffect(() => {
+    //     const fetchData = async () => {
+    //         await apiService.getPresets()
+    //             .then((data) => {
+    //                 if (!data) return;
+    //                 setPresets(data.map(preset => ({...preset, selected: false})));
+    //             });
+    //     };
+    //     fetchData();
+    // }, []);
 
     const handleClickOpen = () => {
         setOpen(true);
-        console.log(props.CustomPresets)
+        console.log(props.customPresets)
     };
     const handleClose = () => {
         setOpen(false);
     };
-
+    const handlePresetClick = (event) => {
+      console.log(event)
+    };
     return (
         <div>
             <Button variant="outlined" onClick={handleClickOpen}>
@@ -98,39 +102,20 @@ const CustomPresets = (props) => {
                 <DialogContent dividers>
                 <div style={{display: "flex"}} >
                 <Box sx={{ width: '60%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                    {/* <nav aria-label="main mailbox folders">
-                        <List>
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                            <ListItemIcon>
-                                <InboxIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Inbox" />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                            <ListItemIcon>
-                                <DraftsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Drafts" />
-                            </ListItemButton>
-                        </ListItem>
-                        </List>
-                    </nav> */}
-                    {/* <Divider /> */}
+                    
                     <nav aria-label="secondary mailbox folders">
                         <List>
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                            <ListItemText primary="Trash" />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton component="a" href="#simple-list">
-                            <ListItemText primary="Spam" />
-                            </ListItemButton>
-                        </ListItem>
+                        {props.customPresets.map((element) => (
+                            <>
+                            <ListItem key={element.name} disablePadding>
+                                <ListItemButton onClick={handlePresetClick(element.name)}>
+                                    <ListItemText primary={element.name}/>
+                                </ListItemButton>
+                            </ListItem>
+                            <Divider />
+                            </>
+                        ))}
+                        
                         </List>
                     </nav>
                 </Box>
