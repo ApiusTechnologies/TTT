@@ -7,6 +7,10 @@ services:
     build: 
       context: ./frontend
       dockerfile: ./Dockerfile.prod
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
     volumes:
       - backendstaticdata:/usr/share/nginx/html/backendstaticdata
     environment:
@@ -15,6 +19,8 @@ services:
   backend:
     restart: always
     build: backend
+    ports:
+      - 8000:8000
     env_file:
       - .env
     entrypoint: /scripts/backend-entrypoint.sh prod
@@ -30,6 +36,14 @@ services:
       - backend
       - rabbit
 
+  ws:
+    build: backend
+    env_file:
+      - .env
+    entrypoint: /scripts/ws-entrypoint.sh
+    depends_on:
+      - backend
+
   rabbit:
     image: rabbitmq:3.8.9-management-alpine
     env_file:
@@ -42,6 +56,10 @@ services:
     depends_on:
       - rabbit
 
+  redis:
+      image: redis:alpine
+      ports: 
+        - 6379:6379
+
 volumes:
-  pgdata:
   backendstaticdata:

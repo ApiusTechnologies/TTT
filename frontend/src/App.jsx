@@ -1,4 +1,5 @@
 import React from 'react';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,15 +11,17 @@ import { theme } from './theme';
 import ApiService from './services/ApiService';
 import CookieService from './services/CookieService';
 import LocalStorageService from './services/LocalStorageService';
+import NotificationWrapper from './common/NotificationWrapper';
 
 const drawerWidth = 240;
 
-const App = () => {
+const App = (props) => {
     const apiService = new ApiService();
     const cookieService = new CookieService();
     const localStorageService = new LocalStorageService();
 
     const [mobileDrawerOpen, setMobileDrawerOpen] = React.useState(false);
+    const [alertOpen, setAlertOpen] = React.useState(false);
 
     const [tags, setTags] = React.useState([]);
     const [isFetchingTags, setIsFetchingTags] = React.useState(false);
@@ -44,6 +47,16 @@ const App = () => {
     const [readNews, setReadNews] = React.useState(getReadNewsFromLocalStorage());
 
     const [isLoggedIn, setIsLoggedIn] = React.useState(Boolean(cookieService.getToken()));
+
+    const [newNews, setNewNews] = React.useState([]);
+
+    if (props.webSocket) {
+        props.webSocket.onmessage = (event) => {
+            const news = JSON.parse(event.data)?.data;
+            setNewNews(previousValue => ([...previousValue, news]));
+            setAlertOpen(true);
+        };
+    }
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -234,6 +247,7 @@ const App = () => {
                     />
                     <Tiles 
                         news={news}
+                        newNews={newNews}
                         nextNewsUrl={nextNewsUrl}
                         isFetchingNews={isFetchingNews}
                         isFetchingNewsError={isFetchingNewsError}
@@ -244,6 +258,14 @@ const App = () => {
                     />
                 </Box>
             </Box>
+            <NotificationWrapper
+                alertOpen={alertOpen}
+                setAlertOpen={setAlertOpen}
+            >
+                <Alert onClose={() => setAlertOpen(false)} severity="info" sx={{ width: '100%' }}>
+                    New news loaded!
+                </Alert>
+            </NotificationWrapper>
         </ThemeProvider>
     );
 };

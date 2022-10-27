@@ -56,7 +56,7 @@ docker-compose exec backend python3 manage.py <command>
 To add a new source, go to backend admin panel, click on parsers and add an entry to a given model. If you want to change a default list of sources that we use, consider executing thie following command (from the main folder) - it will create a dump of the database that is being reloaded every time an application is restarted
 
 ```bash
-docker-compose exec backend python3 manage.py dumpdata parsers > backend/src/parsers/fixtures/initial_sources.json
+docker-compose exec backend python3 manage.py dumpdata parsers --natural-foreign > backend/src/parsers/fixtures/initial_sources.json
 ```
 
 ### Adding a new parser

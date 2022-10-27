@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,6 +16,19 @@ const Tiles = (props) => {
             <Toolbar />
             <Toolbar />
             <Toolbar />
+            {props.newNews && props.newNews.length > 0 && <>
+                <Grid container spacing={1} sx={{
+                    padding: '16px',
+                    paddingBottom: '48px'
+                }}>
+                    {props.newNews.map((element, index) => (
+                        <Grid key={index} item xs={12} md={3}>
+                            <Tile news={element} handleClick={() => props.handleReadMoreClick(element.id)} wasRead={props.readNews?.has(element.id.toString())} />
+                        </Grid>
+                    ))}
+                </Grid>
+                <Divider />
+            </>}
             <Grid container spacing={1} sx={{
                 padding: '16px',
                 paddingBottom: '48px'

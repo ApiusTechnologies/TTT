@@ -11,11 +11,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 
 import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
 import { Container } from '@mui/material';
 import { emailValidator, password2Validator, passwordValidator } from '../common/validators';
 import CookieService from '../services/CookieService';
 import LocalStorageService from '../services/LocalStorageService';
+import NotificationWrapper from '../common/NotificationWrapper';
 
 const Alerts = {
     LogoutSuccess: 'LogoutSuccess',
@@ -257,16 +257,12 @@ const LoginDialog = (props) => {
                     <Button sx={{ display: isRegisterForm ? 'none' : 'block', marginRight: '12px' }} onClick={handleLoginButton}>Login</Button>
                 </DialogActions>
             </Dialog>
-
-            <Snackbar
-                open={alertOpen}
-                autoHideDuration={6000}
-                onClose={handleCloseAlert}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                sx={{ top: '48px !important' }}
+            <NotificationWrapper
+                alertOpen={alertOpen}
+                setAlertOpen={setAlertOpen}
             >
                 {getAlert(alertStatus)}
-            </Snackbar>
+            </NotificationWrapper>
         </>
     );
 };
