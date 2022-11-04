@@ -17,6 +17,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
+import ApiService from '../services/ApiService';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -58,23 +59,47 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   };
 
 const CustomPresets = (props) => {
+    const apiService = new ApiService();
+
     const [open, setOpen] = React.useState(false);
     const [clickedPresetQuery, setClickedPresetQuery] = React.useState('');
+    const [selectedPresetId, setSelectedPresetId] = React.useState();
+    const [customPresets, setCustomPresets] = React.useState(props.customPresets);
 
     const handleClickOpen = () => {
         setOpen(true);
+        setCustomPresets(props.customPresets)
     };
+
     const handleClose = () => {
+        patchProfileCustomPresets(customPresets)
+        // props.setCustomPresets(customPresets)
+        console.log(customPresets)
         setOpen(false);
     };
+
+    const handleChange = (e) =>{
+        customPresets.filter((item) => {
+          if(item.id == selectedPresetId){
+            item.query = e.target.value
+          }
+        });
+        setCustomPresets(customPresets)
+    };
+
     const customPresetsQueryByIndex = (index) => {
       var idx = props.customPresets.map(object => object.id).indexOf(index);
       return props.customPresets[idx].query
     };
+
     const handlePresetClick = (event) => {
       setClickedPresetQuery(customPresetsQueryByIndex(event))
+      setSelectedPresetId(event)
     };
-    
+
+    const patchProfileCustomPresets = async (customPresets) => {
+      await apiService.patchAuthenticatedUserProfile(undefined, undefined, [...customPresets]);
+  };
     return (
         <div>
             <Button variant="outlined" onClick={handleClickOpen} sx={{
@@ -101,7 +126,7 @@ const CustomPresets = (props) => {
                     
                     <nav aria-label="secondary mailbox folders">
                         <List>
-                        {props.customPresets.map((element) => (
+                        {customPresets.map((element) => (
                             <>
                             <ListItem key={element.name} disablePadding>
                                 <ListItemButton onClick={() => handlePresetClick(element.id)}>
@@ -122,6 +147,7 @@ const CustomPresets = (props) => {
                       multiline
                       rows={4}
                       defaultValue={clickedPresetQuery}
+                      onChange={handleChange}
                     />
                 </div>
                 </div>

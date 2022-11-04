@@ -59,5 +59,12 @@ class UserProfileViewSet(ModelViewSet):
         if 'read_news' in body:
             read_news_ids = body['read_news']
             profile.read_news.add(*read_news_ids)
+        if 'custom_presets' in body:
+            custom_presets_objects_list = body['custom_presets']
+
+            for element in custom_presets_objects_list:
+                current_custom_preset = get_object_or_404(CustomPreset, id=element['id'])
+                current_custom_preset.query = element['query']
+                current_custom_preset.save()
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data)

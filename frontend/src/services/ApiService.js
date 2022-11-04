@@ -24,9 +24,9 @@ export class ApiService {
         });
     }
 
-    async patchAuthenticatedUserProfile(presets, readNews) {
+    async patchAuthenticatedUserProfile(presets, readNews, customPresets) {
         return this.requestAPI.patch('api/userprofile/self/', {
-            body: { presets, read_news: readNews },
+            body: { presets, read_news: readNews, custom_presets: customPresets },
             requiresAuthorization: true
         });
     }

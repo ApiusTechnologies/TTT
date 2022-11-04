@@ -195,6 +195,8 @@ const App = () => {
         await apiService.patchAuthenticatedUserProfile(undefined, [...readNews]);
     };
 
+
+
     const handleReadMoreClick = (id) => {
         setReadNews(prevSet => new Set([...prevSet, id.toString()]));
         const localStorageReadNews = localStorageService.getReadNews();
