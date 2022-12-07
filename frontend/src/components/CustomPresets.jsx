@@ -74,6 +74,7 @@ const CustomPresets = (props) => {
     const handleClickOpen = () => {
         setOpen(true);
         setCustomPresets(props.customPresets)
+        console.log(customPresets)
     };
 
     const handleClose = () => {
@@ -140,7 +141,8 @@ const CustomPresets = (props) => {
     return (
         <div>
             <Button variant="outlined" onClick={handleClickOpen} sx={{
-                color: 'primary.contrastText'
+                color: 'primary.contrastText',
+                display: props.isLoggedIn ? 'block' : 'none',
             }}>
                 <Typography variant="h5">
                   Custom Presets

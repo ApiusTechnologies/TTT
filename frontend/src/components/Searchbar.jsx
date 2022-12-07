@@ -64,6 +64,23 @@ const Searchbar = (props) =>  {
                         </Select>
                     </FormControl>
                 </Grid>
+                <Grid item xs={12} md>
+                    <FormControl fullWidth sx={{m:1}}>
+                        <InputLabel id="source-select-label">Custom Preset</InputLabel>
+                        <Select
+                            labelId="source-select-label"
+                            id="source-select"
+                            value={props.sourceFilter}
+                            label="Select Custom Preset"
+                            onChange={props.handleSourceChange}
+                        >
+                            <MenuItem value={''}>All</MenuItem>
+                            <MenuItem value={'Sekurak'}>Sekurak</MenuItem>
+                            <MenuItem value={'@'}>Twitter</MenuItem>
+                            <MenuItem value={'Niebezpiecznik'}>Niebezpiecznik</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
             {props.selectedPresets.length > 0 && 
     <Typography variant='body2' sx={{marginBottom: '-16px'}}>

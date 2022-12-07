@@ -39,9 +39,7 @@ export class ApiService {
     }
 
     async getPresets() {
-        return this.requestAPI.get('api/presets/', { 
-            requiresAuthorization: true
-        });
+        return this.requestAPI.get('api/presets/', {});
     }
 }
 export default ApiService;

@@ -73,7 +73,7 @@ const Navbar = (props) => {
                         TTT
                     </Typography></Box>
                 <Box sx={{ display: 'flex', marginRight: '16px', gap: '16px' }}>
-                    <CustomPresets customPresets={props.customPresets} setCustomPresets={props.setCustomPresets}/>
+                    <CustomPresets isLoggedIn={props.isLoggedIn} customPresets={props.customPresets} setCustomPresets={props.setCustomPresets}/>
                     <PresetDialog setSelectedPresets={props.setSelectedPresets} />
                     <LoginDialog
                         isLoggedIn={props.isLoggedIn}
