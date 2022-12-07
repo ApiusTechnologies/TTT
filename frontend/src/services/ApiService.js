@@ -31,6 +31,13 @@ export class ApiService {
         });
     }
 
+    async postAuthenticatedCustomPresets(deleteId) {
+        return this.requestAPI.post('api/userprofile/self/', {
+            body: {delete_id: deleteId},
+            requiresAuthorization: true
+        });
+    }
+
     async getPresets() {
         return this.requestAPI.get('api/presets/', { 
             requiresAuthorization: true

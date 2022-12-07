@@ -18,6 +18,7 @@ import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
 import ApiService from '../services/ApiService';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -63,9 +64,13 @@ const CustomPresets = (props) => {
 
     const [open, setOpen] = React.useState(false);
     const [clickedPresetQuery, setClickedPresetQuery] = React.useState('');
+    const [clickedPresetName, setClickedPresetName] = React.useState('');
+
     const [selectedPresetId, setSelectedPresetId] = React.useState();
     const [customPresets, setCustomPresets] = React.useState(props.customPresets);
 
+ 
+    
     const handleClickOpen = () => {
         setOpen(true);
         setCustomPresets(props.customPresets)
@@ -78,7 +83,15 @@ const CustomPresets = (props) => {
         setOpen(false);
     };
 
-    const handleChange = (e) =>{
+    const handleCreate = () => {
+      createNewCustomPreset()
+    }
+
+    const handleDelete = (id) => {
+      deleteCustomPreset(id)
+    }
+
+    const handleChangeQuery = (e) =>{
         customPresets.filter((item) => {
           if(item.id == selectedPresetId){
             item.query = e.target.value
@@ -87,19 +100,43 @@ const CustomPresets = (props) => {
         setCustomPresets(customPresets)
     };
 
+    const handleChangeName = (e) =>{
+      customPresets.filter((item) => {
+        if(item.id == selectedPresetId){
+          item.name = e.target.value
+        }
+      });
+      setCustomPresets(customPresets)
+  };
+
     const customPresetsQueryByIndex = (index) => {
       var idx = props.customPresets.map(object => object.id).indexOf(index);
       return props.customPresets[idx].query
     };
 
+    const customPresetsNameByIndex = (index) => {
+      var idx = props.customPresets.map(object => object.id).indexOf(index);
+      console.log(props.customPresets[idx].name)
+      return props.customPresets[idx].name
+    };
+
     const handlePresetClick = (event) => {
       setClickedPresetQuery(customPresetsQueryByIndex(event))
+      setClickedPresetName(customPresetsNameByIndex(event))
       setSelectedPresetId(event)
     };
 
     const patchProfileCustomPresets = async (customPresets) => {
       await apiService.patchAuthenticatedUserProfile(undefined, undefined, [...customPresets]);
   };
+
+    const createNewCustomPreset = async () => {
+      await apiService.postAuthenticatedCustomPresets();
+    };
+
+    const deleteCustomPreset = async (deleteId) => {
+      await apiService.postAuthenticatedCustomPresets(deleteId)
+    }
     return (
         <div>
             <Button variant="outlined" onClick={handleClickOpen} sx={{
@@ -121,18 +158,24 @@ const CustomPresets = (props) => {
                   </Typography>
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
-                <div  >
+                <div style={{ display: 'flex'}} >
                 <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                     
                     <nav aria-label="secondary mailbox folders">
                         <List>
                         {customPresets.map((element) => (
                             <>
-                            <ListItem key={element.name} disablePadding>
-                                <ListItemButton onClick={() => handlePresetClick(element.id)}>
-                                    <ListItemText primary={element.name}/>
-                                </ListItemButton>
-                            </ListItem>
+                            <div style={{display: 'flex'}}>
+                              <ListItem key={element.name} disablePadding>
+                                  <ListItemButton onClick={() => handlePresetClick(element.id)}>
+                                      <ListItemText primary={element.name}/>
+                                  </ListItemButton>
+                              </ListItem>
+                              <Button onClick={() => handleDelete(element.id)}> 
+                                <RemoveCircleIcon style={{ color: 'red', scale: '0.75' }}/>
+                              </Button>
+                            </div>
+                            
                             <Divider />
                             </>
                         ))}
@@ -140,20 +183,30 @@ const CustomPresets = (props) => {
                         </List>
                     </nav>
                 </Box>
-                <div style={{width: "100%", paddingTop: "15px"}}>
+                <div style={{width: "100%", paddingTop: "15px", paddingLeft: "10px"}}>
                     <TextField
+                      style={{ paddingBottom: "10px", width: "100%" }}
+                      id="outlined-multiline-static"
+                      label="Name"
+                      multiline
+                      rows={1}
+                      defaultValue={clickedPresetName}
+                      onChange={handleChangeName}
+                    />
+                    <TextField
+                      style={{ width: "100%" }}
                       id="outlined-multiline-static"
                       label="Query"
                       multiline
-                      rows={4}
+                      rows={6}
                       defaultValue={clickedPresetQuery}
-                      onChange={handleChange}
+                      onChange={handleChangeQuery}
                     />
                 </div>
                 </div>
                 </DialogContent>
                 <DialogActions>
-                <Button autoFocus onClick={handleClose}>
+                <Button autoFocus onClick={handleCreate}>
                     Create
                 </Button>
                 <Button autoFocus onClick={handleClose}>

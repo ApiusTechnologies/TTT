@@ -36,12 +36,14 @@ class UserProfileViewSet(ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-    @action(methods=['get', 'patch'], detail=False, url_path='self')
+    @action(methods=['get', 'patch', 'post'], detail=False, url_path='self')
     def handle_self(self, request):
         if (request.method == 'GET'):
             return self.get_self(request)
         elif (request.method == 'PATCH'):
             return self.patch_self(request)
+        elif (request.method == 'POST'):
+            return self.post_self(request)
 
     def get_self(self, request):
         profile = get_object_or_404(self.queryset, user=request.user.id)
@@ -65,6 +67,27 @@ class UserProfileViewSet(ModelViewSet):
             for element in custom_presets_objects_list:
                 current_custom_preset = get_object_or_404(CustomPreset, id=element['id'])
                 current_custom_preset.query = element['query']
+                current_custom_preset.name = element['name']
                 current_custom_preset.save()
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def post_self(self, request):
+        profile = get_object_or_404(self.queryset, user=request.user.id)
+        body = json.loads(request.body)
+        user_id = request.user.id
+        # custom_presets_to_create = body['custom_presets']
+
+        print(body)
+        if 'delete_id' in body:
+            id_to_delete = body['delete_id']
+            if(id_to_delete):
+                obj = get_object_or_404(CustomPreset, id=id_to_delete)
+                if(obj.user_profile_id == user_id):
+                    CustomPreset.objects.filter(id=id_to_delete).delete()
+        else:
+            cp = CustomPreset(name='New Custom', query="", user_profile_id=user_id)
+            cp.save()
+            
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data)
