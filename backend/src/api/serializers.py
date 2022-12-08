@@ -39,7 +39,7 @@ class PresetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Preset
-        fields = ('id', 'name', 'keywords')
+        fields = ('id', 'name', 'keywords', 'content_type')
 
 class CustomPresetSerializer(serializers.ModelSerializer):
     class Meta:

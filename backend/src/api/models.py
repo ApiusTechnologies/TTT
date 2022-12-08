@@ -37,7 +37,8 @@ class Keyword(models.Model):
 class Preset(models.Model):
     name = models.CharField(name='name', null=True, max_length=256)
     keywords = models.ManyToManyField(Keyword)
-
+    content_type = models.CharField(name='content_type', null=True, max_length=256)
+    
     def __str__(self):
         return f'{self.name}'
 
