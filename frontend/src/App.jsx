@@ -107,10 +107,13 @@ const App = () => {
 
     const fetchNews = async (sourceFilter, newsFilter, tags=undefined, customPresetFilter=undefined) => {
         setIsFetchingNews(true);
+        let news_filter = [newsFilter, customPresetFilter].filter(element => element!=="").join(',')
+        console.log(news_filter)
+        
         await apiService.getNews({
             limit: 16,
             tags,
-            summary: newsFilter+','+customPresetFilter,
+            summary: news_filter,
             source: sourceFilter
         }).then((data) => {
             if (!data) return;
@@ -167,9 +170,17 @@ const App = () => {
 
     const handleCustomPresetFilterChange = async (event) => {
         const newCustomPreset = event.target.value;
-        setCustomPresetFilter(newCustomPreset.query);
-        setSelectedCustomPreset(newCustomPreset.name);
-        await fetchNews(sourceFilter, summaryFilter, undefined, newCustomPreset.query);
+        if(newCustomPreset == ''){
+            await fetchNews(sourceFilter, summaryFilter, undefined, undefined);
+            setCustomPresetFilter('');
+            setSelectedCustomPreset('');
+
+        }
+        else {
+            setCustomPresetFilter(newCustomPreset.query);
+            setSelectedCustomPreset(newCustomPreset.name);
+            await fetchNews(sourceFilter, summaryFilter, undefined, newCustomPreset.query);
+        }
     };
 
     const getMoreNews = async (news, nextNewsUrl, isFetchingNews) => {
