@@ -32,8 +32,12 @@ const App = () => {
     const [tagsFilter, setTagsFilter] = React.useState('');
     const [summaryFilter, setSummaryFilter] = React.useState('');
     const [sourceFilter, setSourceFilter] = React.useState('');
+    const [customPresetFilter, setCustomPresetFilter] = React.useState('');
 
     const [selectedPresets, setSelectedPresets] = React.useState([]);
+    const [selectedCustomPreset, setSelectedCustomPreset] = React.useState([]);
+    const [customPresets, setCustomPresets] = React.useState([]);
+    
 
     const getReadNewsFromLocalStorage = () => {
         const localStorageReadNews = localStorageService.getReadNews();
@@ -59,6 +63,7 @@ const App = () => {
             await apiService.getAuthenticatedUserProfile().then((data) => {
                 if(!data) return;
                 setSelectedPresets(data.presets);
+                setCustomPresets(data.custom_presets);
                 const readNews = new Set([...data.read_news.map(id => id.toString())]);
                 localStorageService.setReadNews([...readNews].join(','));
                 setReadNews(readNews);
@@ -72,6 +77,7 @@ const App = () => {
             await apiService.getAuthenticatedUserProfile().then((data) => {
                 if (!data) return;
                 setSelectedPresets(data.presets);
+                setCustomPresets(data.custom_presets);
                 const readNews = new Set([...data.read_news.map(id => id.toString())]);
                 localStorageService.setReadNews([...readNews].join(','));
                 setReadNews(readNews);
@@ -99,12 +105,12 @@ const App = () => {
         fetchFilteredNews();
     }, [selectedPresets]);
 
-    const fetchNews = async (sourceFilter, newsFilter, tags=undefined) => {
+    const fetchNews = async (sourceFilter, newsFilter, tags=undefined, customPresetFilter=undefined) => {
         setIsFetchingNews(true);
         await apiService.getNews({
             limit: 16,
             tags,
-            summary: newsFilter,
+            summary: newsFilter+','+customPresetFilter,
             source: sourceFilter
         }).then((data) => {
             if (!data) return;
@@ -119,7 +125,7 @@ const App = () => {
 
     const handleTagOnClick = async (tagName) => {
         setTagsFilter(tagName);
-        await fetchNews(sourceFilter, summaryFilter, tagName);
+        await fetchNews(sourceFilter, summaryFilter, tagName, customPresetFilter);
     };
 
     const handleTagFilterSubmit = async (event) => {
@@ -150,13 +156,20 @@ const App = () => {
         const presetKeywords = presetsToUse.flatMap(preset => preset.keywords);
         const searchFilter = [...presetKeywords, inputValue].filter(Boolean).join(',');
         setSummaryFilter(searchFilter);
-        await fetchNews(sourceFilter, searchFilter);
+        await fetchNews(sourceFilter, searchFilter, undefined, customPresetFilter);
     };
 
     const handleSourceFilterChange = async (event) => {
         const newSource = event.target.value;
         setSourceFilter(newSource);
-        await fetchNews(newSource, summaryFilter);
+        await fetchNews(newSource, summaryFilter, undefined, customPresetFilter);
+    };
+
+    const handleCustomPresetFilterChange = async (event) => {
+        const newCustomPreset = event.target.value;
+        setCustomPresetFilter(newCustomPreset.query);
+        setSelectedCustomPreset(newCustomPreset.name);
+        await fetchNews(sourceFilter, summaryFilter, undefined, newCustomPreset.query);
     };
 
     const getMoreNews = async (news, nextNewsUrl, isFetchingNews) => {
@@ -190,6 +203,8 @@ const App = () => {
         await apiService.patchAuthenticatedUserProfile(undefined, [...readNews]);
     };
 
+
+
     const handleReadMoreClick = (id) => {
         setReadNews(prevSet => new Set([...prevSet, id.toString()]));
         const localStorageReadNews = localStorageService.getReadNews();
@@ -209,9 +224,11 @@ const App = () => {
                     drawerWidth={drawerWidth}
                     handleDrawerToggle={handleDrawerToggle}
                     setSelectedPresets={(presets) => setSelectedPresets(presets)}
+                    setCustomPresets={(presets) => setCustomPresets(presets)}
                     patchProfileReadNews={patchProfileReadNews}
                     isLoggedIn={isLoggedIn}
                     setIsLoggedIn={setIsLoggedIn}
+                    customPresets = {customPresets}
                 />
                 <SideDrawer 
                     drawerWidth={drawerWidth}
@@ -225,12 +242,17 @@ const App = () => {
                 />
                 <Box sx={{display: 'flex', flexDirection: 'column', width: '100%'}}>
                     <Searchbar 
+                        isLoggedIn={isLoggedIn}
                         drawerWidth={drawerWidth} 
                         handleTagSubmit={(event) => handleTagFilterSubmit(event)}
                         handleNewsSubmit={(event) => handleSummaryFilterSubmit(event)}
                         sourceFilter={sourceFilter}
                         handleSourceChange={(event) => handleSourceFilterChange(event)}
+                        customPresetFilter={customPresetFilter}
+                        handleCustomPresetChange={(event) => handleCustomPresetFilterChange(event)}
                         selectedPresets={selectedPresets}
+                        selectedCustomPreset={selectedCustomPreset}
+                        customPresets={customPresets}
                     />
                     <Tiles 
                         news={news}

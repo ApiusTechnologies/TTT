@@ -24,17 +24,22 @@ export class ApiService {
         });
     }
 
-    async patchAuthenticatedUserProfile(presets, readNews) {
+    async patchAuthenticatedUserProfile(presets, readNews, customPresets) {
         return this.requestAPI.patch('api/userprofile/self/', {
-            body: { presets, read_news: readNews },
+            body: { presets, read_news: readNews, custom_presets: customPresets },
+            requiresAuthorization: true
+        });
+    }
+
+    async postAuthenticatedCustomPresets(deleteId) {
+        return this.requestAPI.post('api/userprofile/self/', {
+            body: {delete_id: deleteId},
             requiresAuthorization: true
         });
     }
 
     async getPresets() {
-        return this.requestAPI.get('api/presets/', { 
-            requiresAuthorization: true
-        });
+        return this.requestAPI.get('api/presets/', {});
     }
 }
 export default ApiService;

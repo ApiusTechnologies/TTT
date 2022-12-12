@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import LoginDialog from './LoginDialog';
 import PresetDialog from './PresetDialog';
+import CustomPresets from './CustomPresets';
 
 const Navbar = (props) => {
     return (
@@ -72,6 +73,7 @@ const Navbar = (props) => {
                         TTT
                     </Typography></Box>
                 <Box sx={{ display: 'flex', marginRight: '16px', gap: '16px' }}>
+                    <CustomPresets isLoggedIn={props.isLoggedIn} customPresets={props.customPresets} setCustomPresets={props.setCustomPresets}/>
                     <PresetDialog setSelectedPresets={props.setSelectedPresets} />
                     <LoginDialog
                         isLoggedIn={props.isLoggedIn}

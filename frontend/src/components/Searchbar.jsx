@@ -64,11 +64,41 @@ const Searchbar = (props) =>  {
                         </Select>
                     </FormControl>
                 </Grid>
+                <Grid sx={{display: props.isLoggedIn ? 'block' : 'none'}} item xs={12} md>
+                    <FormControl fullWidth sx={{m:1}}>
+                        <InputLabel id="cp-select-label">Custom Preset</InputLabel>
+                        <Select
+                            labelId="cp-select-label"
+                            id="cp-select"
+                            value={props.selectedCustomPreset}
+                            label="Select Custom Preset"
+                            onChange={props.handleCustomPresetChange}
+                        >
+                            <MenuItem sx={{ color: 'green' }} value=''>
+                                Not Selected
+                            </MenuItem>
+                            {props.customPresets.map((custom_preset, index) => (
+                                <MenuItem key={index} value={custom_preset}>
+                                    {custom_preset.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
+            <div style={{ display: 'flex'}}>
             {props.selectedPresets.length > 0 && 
-    <Typography variant='body2' sx={{marginBottom: '-16px'}}>
-        Selected presets: {props.selectedPresets.map(preset => preset.name).join(', ')}
-    </Typography>}
+            <Typography variant='body2' sx={{marginBottom: '-16px'}}>
+                Selected Global Presets: {props.selectedPresets.map(preset => preset.name).join(', ')}
+            </Typography>}
+            {props.selectedCustomPreset.length > 0 && 
+            <Typography variant='body2' sx={{marginBottom: '-16px', marginLeft: 'auto'}}>
+                    Selected Custom Preset: {props.selectedCustomPreset}
+            </Typography>}
+
+            </div>
+
+
         </Box>
     );
 };

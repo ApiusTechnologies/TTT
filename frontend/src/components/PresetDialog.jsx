@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-
+import Divider from '@mui/material/Divider';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -16,7 +16,7 @@ import CookieService from '../services/CookieService';
 const PresetDialog = (props) => {
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
     const [presets, setPresets] = React.useState([]);
-
+    
     const cookieService = new CookieService();
     const apiService = new ApiService();
 
@@ -31,6 +31,12 @@ const PresetDialog = (props) => {
         fetchData();
     }, []);
 
+    const returnPresetContentType = () => {
+        var contentTypes = new Set()
+        presets.map(preset => (contentTypes.add(preset.content_type)))
+        return Array.from(contentTypes).sort()
+    };
+
     const togglePresetSelection = (id) => {
         setPresets(presets.map(preset => String(preset.id) === String(id) ? 
             {...preset, selected: !preset.selected} : 
@@ -39,6 +45,7 @@ const PresetDialog = (props) => {
 
     const handleOpenDialogButton = () => {
         setIsDialogOpen(true);
+        returnPresetContentType();
     };
 
     const handleCloseDialog = () => {
@@ -69,26 +76,48 @@ const PresetDialog = (props) => {
                 </Typography>
 
             </Button>
-            <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-                <DialogTitle>Presets</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Here are source presets defined by administrator for you tu use.
-                    </DialogContentText>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-                        {presets.map((element) => (
-                            <FormControlLabel
+            <Dialog 
+                sx={{
+                "& .MuiDialog-container": {
+                    "& .MuiPaper-root": {
+                    width: "100%",
+                    maxWidth: "780px",
+                    },
+                }}} 
+                open={isDialogOpen} 
+                onClose={handleCloseDialog}>
+                <DialogTitle><Typography variant="h5">Here are Presets defined by administrator for you tu use.</Typography></DialogTitle>
+                <DialogContent sx={{ display: 'flex', flexWrap: 'wrap' }} >
+                    
+                    {returnPresetContentType().map((cType) =>(
+                        <Box key={cType} sx={{ 
+                            minWidth: '150px', 
+                            margin: '5px 5px 5px 5px',
+                            paddingBottom: '10px', 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            ml: 3 }}>
+                            <Divider sx={{ marginBottom: '10px' }} />
+                            <Typography sx={{ fontSize: "18px"}}>
+                                {cType}
+                            </Typography>
+                            {presets.map((element) => (
+                            String(cType) == element.content_type ?                       
+                            (<FormControlLabel sx={{ marginTop: '-10px', marginBottom: '-10px', paddingLeft: '25px' }}
                                 key={element.id}
                                 label={element.name}
                                 value={element.id}
                                 control={
-                                    <Checkbox 
+                                    <Checkbox sx={{ scale: '0.5' }}
                                         checked={presets.find(preset => preset.id === element.id)?.selected} 
                                         onChange={(event) => togglePresetSelection(event.target.value)} />
                                 }
-                            />
+                            />) : null
                         ))}
-                    </Box>
+
+                        </Box>
+                    ))}
+                    
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => handleSubmit()}>Save</Button>
