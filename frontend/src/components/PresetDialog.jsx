@@ -34,7 +34,7 @@ const PresetDialog = (props) => {
     const returnPresetContentType = () => {
         var contentTypes = new Set()
         presets.map(preset => (contentTypes.add(preset.content_type)))
-        return Array.from(contentTypes)
+        return Array.from(contentTypes).sort()
     };
 
     const togglePresetSelection = (id) => {
@@ -76,14 +76,28 @@ const PresetDialog = (props) => {
                 </Typography>
 
             </Button>
-            <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-                <DialogTitle>Presets</DialogTitle>
-                <DialogContent>
-                    <DialogContentText sx={{ marginBottom: '15px' }} >
-                        Here are source presets defined by administrator for you tu use.
-                    </DialogContentText>
+            <Dialog 
+                sx={{
+                "& .MuiDialog-container": {
+                    "& .MuiPaper-root": {
+                    width: "100%",
+                    maxWidth: "780px",
+                    },
+                }}} 
+                open={isDialogOpen} 
+                onClose={handleCloseDialog}>
+                <DialogTitle><Typography variant="h5">Here are Presets defined by administrator for you tu use.</Typography></DialogTitle>
+                <DialogContent sx={{ display: 'flex', flexWrap: 'wrap' }} >
+                    
                     {returnPresetContentType().map((cType) =>(
-                        <Box key={cType} sx={{ paddingBottom: '10px', display: 'flex', flexDirection: 'column', ml: 3 }}>
+                        <Box key={cType} sx={{ 
+                            minWidth: '150px', 
+                            margin: '5px 5px 5px 5px',
+                            paddingBottom: '10px', 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            ml: 3 }}>
+                            <Divider sx={{ marginBottom: '10px' }} />
                             <Typography sx={{ fontSize: "18px"}}>
                                 {cType}
                             </Typography>
@@ -100,7 +114,6 @@ const PresetDialog = (props) => {
                                 }
                             />) : null
                         ))}
-                        <Divider sx={{ marginTop: '10px' }} />
 
                         </Box>
                     ))}
