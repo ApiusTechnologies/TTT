@@ -82,6 +82,7 @@ const CustomPresets = (props) => {
         // props.setCustomPresets(customPresets)
         console.log(customPresets)
         setOpen(false);
+        window.location.reload();
     };
 
     const handleCreate = () => {
