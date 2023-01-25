@@ -15,9 +15,9 @@ const Tiles = (props) => {
             <Toolbar />
             <Toolbar />
             <Toolbar />
-            <Grid container spacing={1} sx={{
-                padding: '16px',
-                paddingBottom: '48px'
+            <Grid container spacing={0} sx={{
+                padding: '0px',
+                paddingBottom: '0px'
             }}>
                 {props.news.length === 0 && !props.isFetchingNews && (
                     <Container sx={{padding: '48px 0 48px 0'}}>
