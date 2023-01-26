@@ -19,13 +19,13 @@ const Tile = (props) => {
                 backgroundColor: props.wasRead ? '#D1D1D1 ' : 'white',
             }}>
                 <CardContent sx={{textAlign: 'center'}}>
-                    <Box sx={{
-                        backgroundColor: props.news?.source?.startsWith('@') ? '#1DA1F2' : 'black',
-                    }}>
-                        <Typography
+                    <Box >
+                        <Typography sx={{
+                        color: props.news?.source?.startsWith('@') ? '#1DA1F2' : 'black',
+                    }}
                             variant="h4"
-                            color="primary.contrastText">
-                            {props.news.source}
+                            >
+                            {props.news?.source?.startsWith('@') ? props.news.source.substring(1) : props.news.source }
                         </Typography>
                     </Box>
                     <Box>
