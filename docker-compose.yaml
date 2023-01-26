@@ -11,6 +11,9 @@ services:
       - backendstaticdata:/usr/share/nginx/html/backendstaticdata
     environment:
       - REACT_APP_URL=localhost
+    ports:
+      - 80:80
+      - 443:443
 
   backend:
     restart: always
@@ -22,6 +25,7 @@ services:
       - backendstaticdata:/static
 
   celery:
+    restart: always
     build: backend
     env_file:
       - .env
@@ -31,16 +35,26 @@ services:
       - rabbit
 
   rabbit:
+    restart: always
     image: rabbitmq:3.8.9-management-alpine
     env_file:
       - .env
 
   flower:
+    restart: always
     image: mher/flower:0.9.5
     env_file:
       - .env
     depends_on:
       - rabbit
+
+  postgres:
+    restart: always
+    image: postgres:13.1-alpine
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
 
 volumes:
   pgdata:
