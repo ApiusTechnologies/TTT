@@ -15,19 +15,12 @@ class SigmaParser(AbstractParser):
 
     def save_rule_to_db(self, data, repoPath, source):
         title = data["title"]
-        print(title)
-
         summary = f'{data["description"]}\nStatus: {data.get("status")}\nLevel: {data.get("level")}\nFalsepositives: {data.get("falsepositives")}\nReferences: {data.get("references")}'
-        print(summary)
-
         repoPathAsString = "/".join(repoPath)
         href = f'https://github.com/SigmaHQ/sigma/blob/master/rules/{repoPathAsString}'
-        print(href)
-
-        print(source)
 
         news, news_created = News.objects.get_or_create(
-            title=title, source=source, href=href, date=datetime.now())
+            title=title, summary=summary, source=source, href=href, date=datetime.now())
 
         if (news_created):
             for rp in repoPath[:-1]:
@@ -46,7 +39,7 @@ class SigmaParser(AbstractParser):
 
         for x in rule_paths:
             rules.add(tuple(x.split("/")))
-
+        
         for x in rules:
             if(len(x) == 2):
                 with open(f'./sigma/rules/{x[0]}/{x[1]}') as f:
@@ -62,4 +55,5 @@ class SigmaParser(AbstractParser):
                     self.save_rule_to_db(data, x, source)
 
     def handleAll(self):
-        self._handle(self.source)
+        for s in self.source:
+            self._handle(s)
