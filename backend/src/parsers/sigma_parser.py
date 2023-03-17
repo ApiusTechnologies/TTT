@@ -20,9 +20,11 @@ class SigmaParser(AbstractParser):
         href = f'https://github.com/SigmaHQ/sigma/blob/master/rules/{repoPathAsString}'
 
         news, news_created = News.objects.get_or_create(
-            title=title, summary=summary, source=source, href=href, date=datetime.now())
+            title=title, summary=summary, source=source, href=href)
 
         if (news_created):
+            news.date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            news.save()
             for rp in repoPath[:-1]:
                 tag, _ = Tag.objects.get_or_create(name=rp)
                 news.tags.add(tag)
@@ -36,7 +38,6 @@ class SigmaParser(AbstractParser):
     def _handle(self, source):
         rule_paths = os.popen(f"find ./sigma/rules -type f | sed -e 's/.\/sigma\/rules\///'g").read().split("\n")
         rules = set()
-
         for x in rule_paths:
             rules.add(tuple(x.split("/")))
         

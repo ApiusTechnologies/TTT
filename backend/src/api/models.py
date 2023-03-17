@@ -17,7 +17,7 @@ class News(models.Model):
     source = models.ForeignKey(SourceBase, on_delete=models.DO_NOTHING)
     href = models.CharField(name='href', null=True, max_length=256)
     tags = models.ManyToManyField(Tag, related_name='news')
-    date = models.DateTimeField()
+    date = models.DateTimeField(null=True)
 
     def __str__(self):
         return f'{self.source.name}: {self.date}'

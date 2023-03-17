@@ -21,7 +21,7 @@ const Tile = (props) => {
                 <CardContent sx={{textAlign: 'center'}}>
                     <Box >
                         <Typography sx={{
-                        color: props.news?.source?.startsWith('@') ? '#1DA1F2' : 'black',
+                        color: props.news?.source?.startsWith('@') ? '#1DA1F2' : (props.news?.source?.startsWith('sig') ? 'red' : 'black'),
                     }}
                             variant="h4"
                             >
