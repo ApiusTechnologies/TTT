@@ -16,6 +16,9 @@ python manage.py createsuperuser --no-input \
 printf "\nLoading initial sources...\n"
 python manage.py loaddata initial_sources
 
+printf "\nCloning Sigma Repository...\n"
+git clone https://github.com/SigmaHQ/sigma.git
+
 if [ $1 = "prod" ]
 then
     gunicorn config.asgi:application \

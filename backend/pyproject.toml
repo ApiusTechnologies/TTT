@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = [
     "Mateusz Stafiniak <mateusz.stafiniak@apius.pl>",
-    "Jakub Brela <jakub.brela@apius.pl>",
     "Marcin Wojciechowski <wojc.marcin@gmail.com>"
 ]
 
