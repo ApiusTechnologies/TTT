@@ -8,6 +8,8 @@ class SourceBase(PolymorphicModel):
     def __str__(self):
         return self.name
 
+class Sigma(SourceBase):
+    href_field = models.CharField(name='href_field', max_length=32)
 
 class TwitterAccount(SourceBase):
     user_id = models.CharField(name='user_id', max_length=32)

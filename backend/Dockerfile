@@ -23,6 +23,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 RUN apt-get update -y \
     && apt-get install --no-install-recommends -y netcat=1.10-41.1 \
+    && apt-get install --no-install-recommends -y git \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/*
 
