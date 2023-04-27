@@ -36,6 +36,7 @@ class SigmaParser(AbstractParser):
             
 
     def _handle(self, source):
+        print(os.popen("cd ./sigma/ && git pull").read())
         rule_paths = os.popen(f"find ./sigma/rules -type f | sed -e 's/.\/sigma\/rules\///'g").read().split("\n")
         rules = set()
         for x in rule_paths:
